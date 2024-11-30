@@ -57,4 +57,15 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    function fetch()
+    {
+        // get data user yang login
+        $user = Auth::user();
+
+        return response()->json([
+            'data' => $user
+        ]);
+    }
+
 }
