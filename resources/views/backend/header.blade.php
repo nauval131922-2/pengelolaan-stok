@@ -5,7 +5,6 @@
         padding-left: 15px;
         padding-right: 15px;
     }
-
 </style>
 
 <header id="page-topbar" style="
@@ -19,7 +18,8 @@ padding-right: 15px;
 ">
         <div class="d-flex">
             <!-- LOGO -->
-            <div class="navbar-brand-box" style="
+            <div class="navbar-brand-box"
+                style="
             padding-left: 15px;
             padding-right: 15px;
         ">
@@ -87,19 +87,25 @@ padding-right: 15px;
             <div class="dropdown d-inline-block user-dropdown">
                 <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="rounded-circle header-profile-user" src="{{ asset('assets/images/users/user.png') }}"
+                    <img class="rounded header-profile-user" src="{{ asset('assets/images/users/user.png') }}"
                         alt="Header Avatar">
                     <span class="d-none d-xl-inline-block ms-1" id="namaUserLoginDiHeader"></span>
                     <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
                     <!-- item-->
-                    <a class="dropdown-item" href="#"><i class="ri-user-line align-middle me-1"></i>
-                        Profile</a>
+                    <a class="dropdown-item" href="{{ route('profile.index') }}"><i
+                            class="ri-user-line align-middle me-1"></i> Profile</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item text-danger" href="#"><i
-                            class="ri-shut-down-line align-middle me-1 text-danger"></i> Logout</a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                    <a class="dropdown-item text-danger" href="#"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i class="ri-shut-down-line align-middle me-1 text-danger"></i> Logout
+                    </a>
                 </div>
+
             </div>
 
 
@@ -108,7 +114,8 @@ padding-right: 15px;
 
 </header>
 
-<div class="topnav" style="
+<div class="topnav"
+    style="
 padding-left: 15px;
 padding-right: 15px;
 background-color: #fff;
@@ -121,14 +128,15 @@ box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
                 <ul class="navbar-nav">
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('dashboard') }}" style="color:#6c757d!important" >
+                        <a class="nav-link" href="{{ route('dashboard') }}" style="color:#6c757d!important">
                             <i class="ri-dashboard-line me-2"></i> Dashboard
                         </a>
                     </li>
 
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-apps" role="button" style="color:#6c757d!important">
+                        <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-apps" role="button"
+                            style="color:#6c757d!important">
                             <i class="ri-apps-2-line me-2"></i>Stok <div class="arrow-down"></div>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="topnav-apps">

@@ -5,7 +5,8 @@
 @endsection
 
 @section('content')
-<div class="container-fluid">
+
+<div class="custom-container">
 
     <!-- start page title -->
     <div class="row">

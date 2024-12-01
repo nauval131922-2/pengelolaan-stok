@@ -32,6 +32,15 @@
 
     <script src="{{ asset('assets/libs/jquery/jquery.min.js') }}"></script>
 
+    <style>
+        .custom-container {
+            width: 100%;
+            max-width: 100%;
+            padding-left: 15px;
+            padding-right: 15px;
+          }
+    </style>
+
 </head>
 
 <body data-topbar="light" data-layout="horizontal">
@@ -75,12 +84,12 @@
     <script>
         $(document).ready(function() {
 
-            fetchDataProfile();
+            fetchDataHeader();
 
         });
 
         // Route::get('/profile/fetch', 'fetch')->name('profile-fetch');
-        function fetchDataProfile() {
+        function fetchDataHeader() {
 
             $.ajax({
                 url: '{{ route('profile.fetch') }}',

@@ -5,17 +5,6 @@
 @endsection
 
 @section('content')
-    <style>
-
-        .custom-container {
-            width: 100%;
-            max-width: 100%;
-            padding-left: 15px;
-            padding-right: 15px;
-          }
-    </style>
-
-
     <div class="custom-container">
 
         <div class="row">

@@ -2,15 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Http\RedirectResponse;
+use App\Models\User;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Intervention\Image\ImageManager;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\ProfileUpdateRequest;
+use Intervention\Image\Laravel\Facades\Image;
+use Intervention\Image\Drivers\Imagick\Driver;
 
 class ProfileController extends Controller
 {
+
+
+    public function index()
+    {
+        // $semua_satuan = Satuan::all();
+        $title = 'Profile';
+        $id = Auth::user()->id;
+        $user = User::find($id);
+
+        return view('backend.profile.index', compact('title', 'user'));
+    }
+
     /**
      * Display the user's profile form.
      */
@@ -24,7 +42,7 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update_backup(ProfileUpdateRequest $request): RedirectResponse
     {
         $request->user()->fill($request->validated());
 
@@ -35,6 +53,88 @@ class ProfileController extends Controller
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+
+    public function update(Request $request)
+    {
+        // Get the id of the authenticated user
+        $id = Auth::user()->id;
+        $user = User::find($id);
+
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'name' => 'required', // User name is required
+            'email' => 'nullable|email|unique:users,email,' . $id, // Email is optional, unique, and must be a valid email format
+        ]);
+
+        // If validation fails, return error response
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()->toArray()
+            ]);
+        }
+
+        // Save the required data from the request
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        // Save the nullable data from the request if it is not empty
+        if ($request->email != null) {
+            $user->email = $request->email;
+        } else {
+            $user->email = null;
+        }
+
+        // Save the uploaded image if there is one
+        // if ($request->hasFile('gambar')) {
+
+        //     if ($user->profile_image != null) {
+        //         unlink($user->profile_image);
+        //     }
+
+        //     // Save the uploaded image with a unique name
+        //     $judul_tanpa_spasi = str_replace(' ', '-', $request->name);
+        //     $nama_file = $judul_tanpa_spasi . '-' . hexdec(uniqid()) . '.' . $request->gambar->getClientOriginalExtension();
+
+        //     // Save the image
+        //     $manager = new ImageManager(new Driver());
+
+        //     Image::make($request->gambar)->save(public_path('/upload/profile_picture/'.$nama_file));
+
+        //     $user->profile_image = 'upload/profile_picture/' . $nama_file;
+        // } elseif ($request->gambarPreview == null && $user->profile_image != null) {
+        //     // If not using the default image, remove the old image
+        //     if ($user->profile_image != 'upload/profile_picture/default/1.jpg') {
+        //         unlink($user->profile_image);
+        //     }
+
+        //     $user->profile_image = '';
+        // } elseif ($request->gambarPreview != null && $user->profile_image != null && $user->profile_image != 'upload/profile_picture/default/1.jpg') {
+        //     // Get the file extension of the old image
+        //     $file_ext = pathinfo($user->profile_image, PATHINFO_EXTENSION);
+
+        //     $judul_tanpa_spasi = str_replace(' ', '-', $request->name);
+        //     $nama_file = $judul_tanpa_spasi . '-' . hexdec(uniqid()) . '.' . $file_ext;
+        //     // Rename the old image file
+        //     rename(public_path($user->profile_image), public_path('upload/profile_picture/' . $nama_file));
+
+        //     $user->profile_image = 'upload/profile_picture/' . $nama_file;
+        // }
+
+        // If the user profile is successfully updated, return success response
+        if ($user->save()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User Profile Updated Successfully!'
+            ]);
+        } else {
+            // If the user profile update fails, return error response
+            return response()->json([
+                'status' => 'error2',
+                'message' => 'User Profile Updated Failed!'
+            ]);
+        }
     }
 
     /**
@@ -67,5 +167,4 @@ class ProfileController extends Controller
             'data' => $user
         ]);
     }
-
 }
