@@ -12,12 +12,12 @@
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon 2.png') }}">
 
     <!-- DataTables -->
-    <link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}"
-        rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}"
-        rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/libs/datatables.net-select-bs4/css//select.bootstrap4.min.css') }}"
-        rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
+        type="text/css" />
+    <link href="{{ asset('assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet"
+        type="text/css" />
+    <link href="{{ asset('assets/libs/datatables.net-select-bs4/css//select.bootstrap4.min.css') }}" rel="stylesheet"
+        type="text/css" />
 
     <!-- Responsive datatable examples -->
     <link href="{{ asset('assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
@@ -38,7 +38,7 @@
             max-width: 100%;
             padding-left: 15px;
             padding-right: 15px;
-          }
+        }
     </style>
 
 </head>
@@ -55,7 +55,8 @@
         <!-- ============================================================== -->
         <div class="main-content">
 
-            <div class="page-content" style="
+            <div class="page-content"
+                style="
             padding-left: 15px;
             padding-right: 15px;
         ">
@@ -81,6 +82,18 @@
     <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
     <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
 
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#gambar').change(function(e) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#showImage').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(e.target.files[0]);
+            });
+        });
+    </script>
+
     <script>
         $(document).ready(function() {
 
@@ -99,8 +112,14 @@
                     let profile = response.data;
                     // isi input dengan id name dengan data yang diambil dari database
                     $('#namaUserLoginDiHeader').text(profile.name);
-                }
 
+                    // Cek apakah profile.foto_profil ada, jika ada gunakan itu, jika tidak gunakan gambar default
+                    var profileImage = profile.foto_profil ? profile.foto_profil :
+                        '{{ asset('assets/images/users/user.png') }}';
+
+                    $('#fotoUserLoginDiHeader').show();
+                    $('#fotoUserLoginDiHeader').attr('src', profileImage);
+                }
             });
         }
     </script>
@@ -120,8 +139,7 @@
 
     <!-- Responsive examples -->
     <script src="{{ asset('assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}">
-    </script>
+    <script src="{{ asset('assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
 
     <!-- Buttons examples -->
     <script src="{{ asset('assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
@@ -138,8 +156,7 @@
 
     <!-- Responsive examples -->
     <script src="{{ asset('assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}">
-    </script>
+    <script src="{{ asset('assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
 
     <!-- Datatable init js -->
     <script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script>

@@ -126,13 +126,52 @@ class ProfileController extends Controller
         if ($user->save()) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'User Profile Updated Successfully!'
+                'message' => 'User Profile updated Successfully!'
             ]);
         } else {
             // If the user profile update fails, return error response
             return response()->json([
                 'status' => 'error2',
-                'message' => 'User Profile Updated Failed!'
+                'message' => 'User Profile update Failed!'
+            ]);
+        }
+    }
+
+    public function updatePassword(Request $request)
+    {
+        // Get the id of the authenticated user
+        $id = Auth::user()->id;
+        $user = User::find($id);
+
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'currentPassword' => 'required|current_password',
+            'newPassword' => 'required',
+            'confirmPassword' => 'required|same:newPassword',
+        ]);
+
+        // If validation fails, return error response
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()->toArray()
+            ]);
+        }
+
+        // Save the required data from the request
+        $user->password = Hash::make($request->newPassword);
+
+        // If the user profile is successfully updated, return success response
+        if ($user->save()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User Password updated Successfully!'
+            ]);
+        } else {
+            // If the user profile update fails, return error response
+            return response()->json([
+                'status' => 'error2',
+                'message' => 'User Password update Failed!'
             ]);
         }
     }

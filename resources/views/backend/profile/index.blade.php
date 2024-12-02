@@ -17,31 +17,118 @@
 
         <form enctype="multipart/form-data" id="formUbahDataProfile" method="POST">
             @csrf
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title mb-2">Profile Picture</h4>
+                            <p class="text-truncate font-size-14 mb-2">Update your account's profile picture.
+                            </p>
+                            <div class="row mb-1">
+                                {{-- gambar --}}
+                                <div class="col-lg-12 col-md-12">
+                                    <img class="img rounded mb-2" alt="Responsive image" height="171" id="showImage">
+                                    <input class="form-control" type="file" name="gambar" id="gambar"
+                                        value="" placeholder="" accept="image/*">
+                                    <input type="hidden" id="gambarLama"
+                                        name="gambarLama">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title mb-2">Profile Information</h4>
+                            <p class="text-truncate font-size-14 mb-2">Update your account's profile information and email
+                                address.
+                            </p>
+
+                            <div class="row mb-1">
+                                <div class="col-lg-6 col-md-6">
+                                    <label for="name" class="col-sm-12 col-form-label">Name <span
+                                            class="text-danger">*</span></label>
+                                    <input class="form-control" type="text" name="name" id="name" value=""
+                                        placeholder="" required>
+                                    <div class="my-2">
+                                        <span class="text-danger error-text name_error"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-lg-6 col-md-6">
+                                    <label for="email" class="col-sm-12 col-form-label">Email <span
+                                            class="text-danger">*</span></label>
+                                    <input class="form-control" type="text" name="email" id="email" value=""
+                                        placeholder="" required>
+                                    <div class="my-2">
+                                        <span class="text-danger error-text email_error"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-lg-6 col-md-6">
+                                    <button class="btn btn-dark" id="btnEditData" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModalScrollable" style="margin-right: 5px;"
+                                        onclick="editData(' +
+                                        value.id +
+                                        ')"><i
+                                            class="ri-save-2-line align-middle me-1"></i><span
+                                            style="vertical-align: middle">Save</span></button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <form enctype="multipart/form-data" id="formUbahDataPassword" method="POST">
+            @csrf
+
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-2">Profile Information</h4>
-                    <p class="text-truncate font-size-14 mb-2">Update your account's profile information and email address.</p>
+                    <h4 class="card-title mb-2">Update Password</h4>
+                    <p class="text-truncate font-size-14 mb-2">Ensure your account is using a long, random password to stay
+                        secure.</p>
 
                     <div class="row mb-1">
                         <div class="col-lg-6 col-md-6">
-                            <label for="name" class="col-sm-12 col-form-label">Name <span
+                            <label for="currentPassword" class="col-sm-12 col-form-label">Current Password <span
                                     class="text-danger">*</span></label>
-                            <input class="form-control" type="text" name="name" id="name" value=""
-                                placeholder="" required>
-                            <div class="mt-2">
-                                <span class="text-danger error-text name_error"></span>
+                            <input class="form-control" type="password" name="currentPassword" id="currentPassword"
+                                value="" placeholder="" required>
+                            <div class="my-2">
+                                <span class="text-danger error-text currentPassword_error"></span>
                             </div>
                         </div>
                     </div>
 
                     <div class="row mb-1">
                         <div class="col-lg-6 col-md-6">
-                            <label for="email" class="col-sm-12 col-form-label">Email <span
+                            <label for="newPassword" class="col-sm-12 col-form-label">New Password <span
                                     class="text-danger">*</span></label>
-                            <input class="form-control" type="text" name="email" id="email" value=""
+                            <input class="form-control" type="password" name="newPassword" id="newPassword" value=""
                                 placeholder="" required>
-                            <div class="mt-2">
-                                <span class="text-danger error-text email_error"></span>
+                            <div class="my-2">
+                                <span class="text-danger error-text newPassword_error"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <div class="col-lg-6 col-md-6">
+                            <label for="confirmPassword" class="col-sm-12 col-form-label">Confirm Password <span
+                                    class="text-danger">*</span></label>
+                            <input class="form-control" type="password" name="confirmPassword" id="confirmPassword"
+                                value="" placeholder="" required>
+                            <div class="my-2">
+                                <span class="text-danger error-text confirmPassword_error"></span>
                             </div>
                         </div>
                     </div>
@@ -62,69 +149,12 @@
             </div>
         </form>
 
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title mb-2">Update Password</h4>
-                <p class="text-truncate font-size-14 mb-2">Ensure your account is using a long, random password to stay
-                    secure.</p>
-
-                <div class="row mb-1">
-                    <div class="col-lg-6 col-md-6">
-                        <label for="name" class="col-sm-12 col-form-label">Current Password <span
-                                class="text-danger">*</span></label>
-                        <input class="form-control" type="text" name="name" id="name" value=""
-                            placeholder="" required>
-                        <div class="mt-2">
-                            <span class="text-danger error-text name_error"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row mb-1">
-                    <div class="col-lg-6 col-md-6">
-                        <label for="email" class="col-sm-12 col-form-label">New Password <span
-                                class="text-danger">*</span></label>
-                        <input class="form-control" type="text" name="email" id="email" value=""
-                            placeholder="" required>
-                        <div class="mt-2">
-                            <span class="text-danger error-text email_error"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row mb-1">
-                    <div class="col-lg-6 col-md-6">
-                        <label for="email" class="col-sm-12 col-form-label">Confirm Password <span
-                                class="text-danger">*</span></label>
-                        <input class="form-control" type="text" name="email" id="email" value=""
-                            placeholder="" required>
-                        <div class="mt-2">
-                            <span class="text-danger error-text email_error"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row mb-1">
-                    <div class="col-lg-6 col-md-6">
-                        <button class="btn btn-dark" id="btnEditData" data-bs-toggle="modal"
-                            data-bs-target="#exampleModalScrollable" style="margin-right: 5px;"
-                            onclick="editData(' +
-                            value.id +
-                            ')"><i
-                                class="ri-save-2-line align-middle me-1"></i><span
-                                style="vertical-align: middle">Save</span></button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
 
     </div>
 
 
     <script>
         $(document).ready(function() {
-
             fetchData();
 
         });
@@ -140,6 +170,15 @@
                     $('#name').val(profile.name);
                     $('#email').val(profile.email);
                     $('#namaUserLoginDiHeader').text(profile.name);
+                    // Cek apakah profile.foto_profil ada, jika ada gunakan itu, jika tidak gunakan gambar default
+                    var profileImage = profile.foto_profil ? profile.foto_profil :
+                        '{{ asset('assets/images/users/user.png') }}';
+
+                    profile.foto_profil ? $('#gambarLama"').val(profileImage) : '';
+                    profile.foto_profil ? $('#showImage').attr('src', profileImage) : '';
+
+                    $('#showImage').show();
+                    $('#showImage').attr('src', profileImage);
                 }
 
             });
@@ -166,49 +205,49 @@
                             $('span.' + prefix + '_error').text(val[0]);
                         });
                     } else if (response.status == 'error2') {
-                        toastr.warning(response.message, "", {
-                            "closeButton": true,
-                            "debug": false,
-                            "newestOnTop": false,
-                            "progressBar": false,
-                            "positionClass": "toast-top-right",
-                            "preventDuplicates": false,
-                            "onclick": null,
-                            "showDuration": "100",
-                            "hideDuration": "100",
-                            "timeOut": "5000",
-                            "extendedTimeOut": "1000",
-                            "showEasing": "swing",
-                            "hideEasing": "linear",
-                            "showMethod": "fadeIn",
-                            "hideMethod": "fadeOut"
-                        });
+                        // tampilkan alert
+                        alert(response.message);
                     } else {
-
-                        // // toastr success message
-                        // toastr.success(response.message, "", {
-                        //     "closeButton": false,
-                        //     "debug": false,
-                        //     "newestOnTop": true,
-                        //     "progressBar": false,
-                        //     "positionClass": "toast-top-right",
-                        //     "preventDuplicates": false,
-                        //     "onclick": null,
-                        //     "showDuration": "100",
-                        //     "hideDuration": "100",
-                        //     "timeOut": "1500",
-                        //     "extendedTimeOut": "1000",
-                        //     "showEasing": "swing",
-                        //     "hideEasing": "linear",
-                        //     "showMethod": "fadeIn",
-                        //     "hideMethod": "fadeOut"
-                        // });
-
-                        // // hide modal
-                        // $('#exampleModalScrollable').modal('hide');
-
                         // fetch data
                         fetchData();
+
+                        // tampilkan alert
+                        alert(response.message);
+                    }
+                }
+            })
+
+        })
+
+        $('#formUbahDataPassword').on('submit', function(e) {
+            e.preventDefault();
+
+            let formData = new FormData($('#formUbahDataPassword')[0]);
+
+            $.ajax({
+                url: '{{ route('profile.update.password') }}',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    $(document).find('span.error-text').text('');
+                },
+                success: function(response) {
+
+                    if (response.status == 'error') {
+                        $.each(response.message, function(prefix, val) {
+                            $('span.' + prefix + '_error').text(val[0]);
+                        });
+                    } else if (response.status == 'error2') {
+                        // tampilkan alert
+                        alert(response.message);
+                    } else {
+                        // kosongkan form
+                        $('#formUbahDataPassword')[0].reset();
+
+                        // tampilkan alert
+                        alert(response.message);
                     }
                 }
             })

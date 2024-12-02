@@ -87,7 +87,7 @@ padding-right: 15px;
             <div class="dropdown d-inline-block user-dropdown">
                 <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="rounded header-profile-user" src="{{ asset('assets/images/users/user.png') }}"
+                    <img class="rounded header-profile-user" id="fotoUserLoginDiHeader"
                         alt="Header Avatar">
                     <span class="d-none d-xl-inline-block ms-1" id="namaUserLoginDiHeader"></span>
                     <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
@@ -137,7 +137,7 @@ box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-apps" role="button"
                             style="color:#6c757d!important">
-                            <i class="ri-apps-2-line me-2"></i>Stok <div class="arrow-down"></div>
+                            </i>Stok <div class="arrow-down"></div>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="topnav-apps">
 
