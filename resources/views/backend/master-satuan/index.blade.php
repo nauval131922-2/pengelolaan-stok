@@ -21,16 +21,19 @@
                     <div class="flex-grow-1">
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
-                                    role="tab" aria-controls="home" aria-selected="true">Daftar {{ $sub_title }}</button>
+                                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
+                                    type="button" role="tab" aria-controls="home" aria-selected="true">Daftar
+                                    {{ $sub_title }}</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
-                                    role="tab" aria-controls="profile" aria-selected="false">Tambah {{ $sub_title }}</button>
+                                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile"
+                                    type="button" role="tab" aria-controls="profile" aria-selected="false">Tambah
+                                    {{ $sub_title }}</button>
                             </li>
                         </ul>
                         <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                            <div class="tab-pane fade show active" id="home" role="tabpanel"
+                                aria-labelledby="home-tab">
                                 <div class="col-xl-12 col-md-12" style="padding-top: 15px">
                                     <table id="datatable"
                                         class="table table-striped table-bordered dt-responsive nowrap dataTable no-footer dtr-inline collapsed"
@@ -50,7 +53,31 @@
                                     </table>
                                 </div><!-- end col -->
                             </div>
-                            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...
+
+                            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                <form enctype="multipart/form-data" id="formTambahData" method="POST">
+                                    @csrf
+                                    <div class="row mb-1 mt-2">
+                                        <div class="col-lg-6 col-md-6">
+                                            <label for="satuan" class="col-sm-12 col-form-label">Satuan <span
+                                                    class="text-danger">*</span></label>
+                                            <input class="form-control" type="text" name="satuan" id="satuan"
+                                                value="" placeholder="" required>
+                                            <div class="my-2">
+                                                <span class="text-danger error-text satuan_error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-1">
+                                        <div class="col-lg-6 col-md-6">
+                                            <button class="btn btn-dark" id="btnEditData" data-bs-toggle="modal"
+                                                data-bs-target="#exampleModalScrollable" style="margin-right: 5px;"
+                                                onclick=""><i class="ri-save-2-line align-middle me-1"></i><span
+                                                    style="vertical-align: middle">Save</span></button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
 
@@ -65,14 +92,12 @@
     <script>
         $(document).ready(function() {
             // buatkan alert saat pertama kali halaman di load
-            fetchDataMasterSatuan();
+            fetchData();
 
         });
 
-        // menampilkan modal tambah data
-
         // buatkan function fecthData
-        function fetchDataMasterSatuan() {
+        function fetchData() {
             $.ajax({
                 url: '{{ route('master-satuan-fetch') }}',
                 type: 'GET',
@@ -110,5 +135,62 @@
                 }
             });
         }
+
+        function deleteData(id) {
+            if (confirm('Apakah anda yakin ingin menghapus data ini?')) {
+
+                $.ajax({
+                    url: '{{ url('master-satuan/hapus') }}/' + id,
+                    type: 'get',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        fetchData();
+
+                        alert(response.message);
+                    }
+                });
+            }
+        }
+
+        $('#formTambahData').on('submit', function(e) {
+            e.preventDefault();
+
+            let formData = new FormData($('#formTambahData')[0]);
+
+            $.ajax({
+                url: '{{ route('master-satuan-tambah') }}',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    $(document).find('span.error-text').text('');
+                },
+                success: function(response) {
+
+                    if (response.status == 'error') {
+                        $.each(response.message, function(prefix, val) {
+                            $('span.' + prefix + '_error').text(val[0]);
+                        });
+                    } else if (response.status == 'error2') {
+                        // tampilkan alert
+                        alert(response.message);
+                    } else {
+                        // fetch data
+                        fetchData();
+
+                        // tampilkan alert
+                        alert(response.message);
+
+                        // aktifkan tab dengan id daftar
+                        $('#home').tab('show');
+                    }
+                }
+            })
+
+        })
+
     </script>
 @endsection

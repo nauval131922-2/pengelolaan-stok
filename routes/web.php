@@ -37,11 +37,11 @@ Route::middleware('auth')->group(function () {
     Route::controller(SatuanController::class)->group(function () {
         Route::get('/master-satuan', 'index')->name('master-satuan-index');
         Route::get('/master-satuan/fetch', 'fetch')->name('master-satuan-fetch');
-        // Route::get('/mata-pelajaran/tambah', 'tambah')->name('mata-pelajaran-tambah');
+        Route::post('/master-satuan/tambah', 'tambah')->name('master-satuan-tambah');
         // Route::post('/mata-pelajaran/simpan', 'simpan')->name('mata-pelajaran-simpan');
         // Route::get('/mata-pelajaran/edit/{id}', 'edit')->name('mata-pelajaran-edit');
         // Route::post('/mata-pelajaran/update/{id}', 'update')->name('mata-pelajaran-update');
-        // Route::get('/mata-pelajaran/hapus/{id}', 'hapus')->name('mata-pelajaran-hapus');
+        Route::get('/master-satuan/hapus/{id}', 'hapus')->name('master-satuan-hapus');
     });
 
 });

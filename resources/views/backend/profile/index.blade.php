@@ -27,7 +27,7 @@
                             <div class="row mb-1">
                                 {{-- gambar --}}
                                 <div class="col-lg-12 col-md-12">
-                                    <img class="img rounded mb-2" alt="Responsive image" height="171" id="showImage">
+                                    <img class="img rounded mb-2" alt="Profile Picture" height="171" id="showImage">
                                     <input class="form-control" type="file" name="gambar" id="gambar" value=""
                                         placeholder="" accept="image/*">
                                     <input type="hidden" id="gambarLama" name="gambarLama">
@@ -58,6 +58,10 @@
                                         <span class="text-danger error-text name_error"></span>
                                     </div>
                                 </div>
+
+                            </div>
+
+                            <div class="row mb-1">
                                 <div class="col-lg-6 col-md-6">
                                     <label for="username" class="col-sm-12 col-form-label">Username <span
                                             class="text-danger">*</span></label>
@@ -65,18 +69,6 @@
                                         placeholder="" required>
                                     <div class="my-2">
                                         <span class="text-danger error-text username_error"></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row mb-1">
-                                <div class="col-lg-6 col-md-6">
-                                    <label for="email" class="col-sm-12 col-form-label">Email <span
-                                            class="text-danger">*</span></label>
-                                    <input class="form-control" type="text" name="email" id="email" value=""
-                                        placeholder="" required>
-                                    <div class="my-2">
-                                        <span class="text-danger error-text email_error"></span>
                                     </div>
                                 </div>
                             </div>
