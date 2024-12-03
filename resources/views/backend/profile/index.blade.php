@@ -15,10 +15,10 @@
             </div>
         </div>
 
-        <form enctype="multipart/form-data" id="formUbahDataProfile" method="POST">
-            @csrf
-            <div class="row">
-                <div class="col-lg-4">
+        <div class="row">
+            <div class="col-lg-4">
+                <form enctype="multipart/form-data" id="formUbahDataProfilePicture" method="POST">
+                    @csrf
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title mb-2">Profile Picture</h4>
@@ -28,17 +28,19 @@
                                 {{-- gambar --}}
                                 <div class="col-lg-12 col-md-12">
                                     <img class="img rounded mb-2" alt="Responsive image" height="171" id="showImage">
-                                    <input class="form-control" type="file" name="gambar" id="gambar"
-                                        value="" placeholder="" accept="image/*">
-                                    <input type="hidden" id="gambarLama"
-                                        name="gambarLama">
+                                    <input class="form-control" type="file" name="gambar" id="gambar" value=""
+                                        placeholder="" accept="image/*">
+                                    <input type="hidden" id="gambarLama" name="gambarLama">
                                 </div>
                             </div>
                         </div>
                     </div>
+                </form>
+            </div>
 
-                </div>
-                <div class="col-lg-8">
+            <div class="col-lg-8">
+                <form enctype="multipart/form-data" id="formUbahDataProfile" method="POST">
+                    @csrf
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title mb-2">Profile Information</h4>
@@ -54,6 +56,15 @@
                                         placeholder="" required>
                                     <div class="my-2">
                                         <span class="text-danger error-text name_error"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <label for="username" class="col-sm-12 col-form-label">Username <span
+                                            class="text-danger">*</span></label>
+                                    <input class="form-control" type="text" name="username" id="username" value=""
+                                        placeholder="" required>
+                                    <div class="my-2">
+                                        <span class="text-danger error-text username_error"></span>
                                     </div>
                                 </div>
                             </div>
@@ -84,9 +95,9 @@
 
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
-        </form>
+        </div>
 
         <form enctype="multipart/form-data" id="formUbahDataPassword" method="POST">
             @csrf
@@ -113,8 +124,8 @@
                         <div class="col-lg-6 col-md-6">
                             <label for="newPassword" class="col-sm-12 col-form-label">New Password <span
                                     class="text-danger">*</span></label>
-                            <input class="form-control" type="password" name="newPassword" id="newPassword" value=""
-                                placeholder="" required>
+                            <input class="form-control" type="password" name="newPassword" id="newPassword"
+                                value="" placeholder="" required>
                             <div class="my-2">
                                 <span class="text-danger error-text newPassword_error"></span>
                             </div>
@@ -168,15 +179,20 @@
                 success: function(response) {
                     let profile = response.data;
                     $('#name').val(profile.name);
+                    $('#username').val(profile.username);
                     $('#email').val(profile.email);
                     $('#namaUserLoginDiHeader').text(profile.name);
                     // Cek apakah profile.foto_profil ada, jika ada gunakan itu, jika tidak gunakan gambar default
                     var profileImage = profile.foto_profil ? profile.foto_profil :
                         '{{ asset('assets/images/users/user.png') }}';
 
-                    profile.foto_profil ? $('#gambarLama"').val(profileImage) : '';
+                    $('#fotoUserLoginDiHeader').show();
+                    $('#fotoUserLoginDiHeader').attr('src', profileImage);
+
+                    profile.foto_profil ? $('#gambarLama').val(profileImage) : '';
                     profile.foto_profil ? $('#showImage').attr('src', profileImage) : '';
 
+                    $('#gambar').val('')
                     $('#showImage').show();
                     $('#showImage').attr('src', profileImage);
                 }
@@ -245,6 +261,41 @@
                     } else {
                         // kosongkan form
                         $('#formUbahDataPassword')[0].reset();
+
+                        // tampilkan alert
+                        alert(response.message);
+                    }
+                }
+            })
+
+        })
+
+        $('#gambar').on('change', function(e) {
+            e.preventDefault();
+
+            let formData = new FormData($('#formUbahDataProfilePicture')[0]);
+
+            $.ajax({
+                url: '{{ route('profile.update.profile.picture') }}',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    $(document).find('span.error-text').text('');
+                },
+                success: function(response) {
+
+                    if (response.status == 'error') {
+                        $.each(response.message, function(prefix, val) {
+                            $('span.' + prefix + '_error').text(val[0]);
+                        });
+                    } else if (response.status == 'error2') {
+                        // tampilkan alert
+                        alert(response.message);
+                    } else {
+                        // fetch data
+                        fetchData();
 
                         // tampilkan alert
                         alert(response.message);
