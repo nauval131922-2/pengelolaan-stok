@@ -185,7 +185,10 @@
                         alert(response.message);
 
                         // aktifkan tab dengan id daftar
-                        $('#home').tab('show');
+                        $('#home-tab').addClass('active');
+                        $('#profile-tab').removeClass('active');
+                        $('#home').addClass('show');
+                        $('#profile').removeClass('show');
                     }
                 }
             })
