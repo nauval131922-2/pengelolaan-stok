@@ -2,30 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kategori;
+use App\Models\Barang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class KategoriController extends Controller
+class BarangController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $semua_kategori = Kategori::all();
-        $title = 'Master Kategori';
-        $sub_title = 'Kategori';
+        $semua_barang = Barang::all();
+        $title = 'Master Barang';
+        $sub_title = 'Barang';
 
-        return view('backend.master-kategori.index', compact('semua_kategori', 'title', 'sub_title'));
+        return view('backend.master-barang.index', compact('semua_barang', 'title', 'sub_title'));
     }
 
     function fetch()
     {
-        $semua_kategori = Kategori::all();
+        $semua_barang = Barang::all();
 
         return response()->json([
-            'data' => $semua_kategori
+            'data' => $semua_barang
         ]);
     }
 
@@ -44,7 +44,7 @@ class KategoriController extends Controller
     {
         // Validate the request data
         $validator = Validator::make($request->all(), [
-            'kategori' => 'required|unique:kategoris,nama_kategori',
+            'barang' => 'required|unique:barangs,nama_barang',
         ]);
 
         // If validation fails, return error response
@@ -56,12 +56,12 @@ class KategoriController extends Controller
         }
 
         // Save the required data from the request
-        $kategori = new Kategori;
-        $kategori->nama_kategori = $request->kategori;
+        $barang = new Barang;
+        $barang->nama_barang = $request->barang;
 
 
         // If the user profile is successfully updated, return success response
-        if ($kategori->save()) {
+        if ($barang->save()) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Data berhasil disimpan!'
@@ -78,7 +78,7 @@ class KategoriController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Kategori $kategori)
+    public function show(Barang $barang)
     {
         //
     }
@@ -88,12 +88,12 @@ class KategoriController extends Controller
      */
     public function edit($id)
     {
-        $kategori = Kategori::find($id);
+        $barang = Barang::find($id);
 
-        $title = 'Ubah Kategori';
+        $title = 'Ubah Barang';
 
         return response()->json([
-            'data' => $kategori,
+            'data' => $barang,
             'title' => $title
         ]);
     }
@@ -105,7 +105,7 @@ class KategoriController extends Controller
     {
         // Validate the request data
         $validator = Validator::make($request->all(), [
-            'kategori' => 'required|unique:kategoris,nama_kategori,' . $id,
+            'barang' => 'required|unique:barangs,nama_barang,' . $id,
         ]);
 
         // If validation fails, return error response
@@ -117,11 +117,11 @@ class KategoriController extends Controller
         }
 
         // Save the required data from the request
-        $kategori = Kategori::find($id);
-        $kategori->nama_kategori = $request->kategori;
+        $barang = Barang::find($id);
+        $barang->nama_barang = $request->barang;
 
         // If the user profile is successfully updated, return success response
-        if ($kategori->save()) {
+        if ($barang->save()) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Data berhasil disimpan!'
@@ -140,10 +140,10 @@ class KategoriController extends Controller
      */
     public function hapus($id)
     {
-        $kategori = Kategori::find($id);
+        $barang = Barang::find($id);
 
         // jika berhasil dihapus
-        if ($kategori->delete()) {
+        if ($barang->delete()) {
             return response()->json(['status' => 'success', 'message' => 'Data berhasil dihapus.']);
         } else {
             return response()->json(['status' => 'error', 'message' => 'Gagal menghapus data.']);

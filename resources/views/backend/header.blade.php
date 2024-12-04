@@ -149,8 +149,8 @@ box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
                                 <div class="dropdown-menu" aria-labelledby="topnav-data">
                                     <a href="{{ route('master-satuan-index') }}" class="dropdown-item">Master
                                         Satuan</a>
-                                    <a href="data-inbox.html" class="dropdown-item">Master Kategori</a>
-                                    <a href="data-inbox.html" class="dropdown-item">Master Barang</a>
+                                    <a href="{{ route('master-kategori-index') }}" class="dropdown-item">Master Kategori</a>
+                                    <a href="{{ route('master-barang-index') }}" class="dropdown-item">Master Barang</a>
                                 </div>
                             </div>
 
