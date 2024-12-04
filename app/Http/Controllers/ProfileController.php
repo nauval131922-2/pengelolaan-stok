@@ -167,7 +167,7 @@ class ProfileController extends Controller
             }
 
             // Save the uploaded image with a unique name
-            $judul_tanpa_spasi = str_replace(' ', '-', $request->name);
+            $judul_tanpa_spasi = str_replace(' ', '-', auth()->user()->name);
             $nama_file = $judul_tanpa_spasi . '-' . hexdec(uniqid()) . '.' . $request->gambar->getClientOriginalExtension();
 
             // Save the image
@@ -185,7 +185,7 @@ class ProfileController extends Controller
             // Get the file extension of the old image
             $file_ext = pathinfo($user->foto_profil, PATHINFO_EXTENSION);
 
-            $judul_tanpa_spasi = str_replace(' ', '-', $request->name);
+            $judul_tanpa_spasi = str_replace(' ', '-', auth()->user()->name);
             $nama_file = $judul_tanpa_spasi . '-' . hexdec(uniqid()) . '.' . $file_ext;
             // Rename the old image file
             rename(public_path($user->foto_profil), public_path('upload/profile_picture/' . $nama_file));
