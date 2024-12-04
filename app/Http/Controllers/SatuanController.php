@@ -42,7 +42,7 @@ class SatuanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function tambah(Request $request)
+    public function simpan(Request $request)
     {
         // Validate the request data
         $validator = Validator::make($request->all(), [
@@ -88,17 +88,53 @@ class SatuanController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Satuan $satuan)
+    public function edit($id)
     {
-        //
+        $satuan = Satuan::find($id);
+
+        $title = 'Ubah Satuan';
+
+        return response()->json([
+            'data' => $satuan,
+            'title' => $title
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSatuanRequest $request, Satuan $satuan)
+    public function update(Request $request, $id)
     {
-        //
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'satuan' => 'required|unique:satuans,nama_satuan,' . $id,
+        ]);
+
+        // If validation fails, return error response
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()->toArray()
+            ]);
+        }
+
+        // Save the required data from the request
+        $satuan = Satuan::find($id);
+        $satuan->nama_satuan = $request->satuan;
+
+        // If the user profile is successfully updated, return success response
+        if ($satuan->save()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil disimpan!'
+            ]);
+        } else {
+            // If the user profile update fails, return error response
+            return response()->json([
+                'status' => 'error2',
+                'message' => 'Data gagal disimpan!'
+            ]);
+        }
     }
 
     /**

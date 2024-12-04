@@ -21,19 +21,20 @@
                     <div class="flex-grow-1">
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
-                                    type="button" role="tab" aria-controls="home" aria-selected="true">Daftar
+                                <button class="nav-link active" id="daftar-tab" data-bs-toggle="tab"
+                                    data-bs-target="#daftar" type="button" role="tab" aria-controls="daftar"
+                                    aria-selected="true">Daftar
                                     {{ $sub_title }}</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile"
-                                    type="button" role="tab" aria-controls="profile" aria-selected="false">Tambah
+                                <button class="nav-link" id="tambah-tab" data-bs-toggle="tab" data-bs-target="#tambah"
+                                    type="button" role="tab" aria-controls="tambah" aria-selected="false">Tambah
                                     {{ $sub_title }}</button>
                             </li>
                         </ul>
                         <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="home" role="tabpanel"
-                                aria-labelledby="home-tab">
+                            <div class="tab-pane fade show active" id="daftar" role="tabpanel"
+                                aria-labelledby="daftar-tab">
                                 <div class="col-xl-12 col-md-12" style="padding-top: 15px">
                                     <table id="datatable"
                                         class="table table-striped table-bordered dt-responsive nowrap dataTable no-footer dtr-inline collapsed"
@@ -54,9 +55,12 @@
                                 </div><!-- end col -->
                             </div>
 
-                            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="tab-pane fade" id="tambah" role="tabpanel" aria-labelledby="tambah-tab">
                                 <form enctype="multipart/form-data" id="formTambahData" method="POST">
                                     @csrf
+                                    <input class="form-control" type="hidden" name="id" id="id" value=""
+                                        placeholder="">
+
                                     <div class="row mb-1 mt-2">
                                         <div class="col-lg-6 col-md-6">
                                             <label for="satuan" class="col-sm-12 col-form-label">Satuan <span
@@ -91,6 +95,7 @@
 
     <script>
         $(document).ready(function() {
+
             // buatkan alert saat pertama kali halaman di load
             fetchData();
 
@@ -158,42 +163,124 @@
             e.preventDefault();
 
             let formData = new FormData($('#formTambahData')[0]);
+            
+            // deklarasikan id
+            let id = $('#id').val();
 
+            if (id == '') {
+                $.ajax({
+                    url: '{{ route('master-satuan-simpan') }}',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function() {
+                        $(document).find('span.error-text').text('');
+                    },
+                    success: function(response) {
+
+                        if (response.status == 'error') {
+                            $.each(response.message, function(prefix, val) {
+                                $('span.' + prefix + '_error').text(val[0]);
+                            });
+                        } else if (response.status == 'error2') {
+                            // tampilkan alert
+                            alert(response.message);
+                        } else {
+                            // fetch data
+                            fetchData();
+
+                            // tampilkan alert
+                            alert(response.message);
+
+                            // aktifkan tab dengan id daftar
+                            $('#daftar-tab').addClass('active');
+                            $('#tambah-tab').removeClass('active');
+                            $('#daftar').addClass('show active');
+                            $('#tambah').removeClass('show active');
+
+                            // kosongkan form
+                            $('#formTambahData')[0].reset();
+                            $('#id').val('');
+                        }
+                    }
+                })
+            } else {
+                $.ajax({
+                    url: '{{ url('master-satuan/update') }}/' + id,
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function() {
+                        $(document).find('span.error-text').text('');
+                    },
+                    success: function(response) {
+
+                        if (response.status == 'error') {
+                            $.each(response.message, function(prefix, val) {
+                                $('span.' + prefix + '_error').text(val[0]);
+                            });
+                        } else if (response.status == 'error2') {
+                            // tampilkan alert
+                            alert(response.message);
+                        } else {
+                            // fetch data
+                            fetchData();
+
+                            // tampilkan alert
+                            alert(response.message);
+
+                            // aktifkan tab dengan id daftar
+                            $('#daftar-tab').addClass('active');
+                            $('#tambah-tab').removeClass('active');
+                            $('#daftar').addClass('show active');
+                            $('#tambah').removeClass('show active');
+
+                            // kosongkan form
+                            $('#formTambahData')[0].reset();
+                            $('#id').val('');
+
+                            // ubah nama #tambah-tab dari "Ubah" {{ $sub_title }} menjadi "Tambah" {{ $sub_title }}
+                            $('#tambah-tab').text('Tambah {{ $sub_title }}');
+                        }
+                    }
+                })
+            }
+        });
+
+        // buatkan function editData
+        function editData(id) {
             $.ajax({
-                url: '{{ route('master-satuan-tambah') }}',
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                beforeSend: function() {
-                    $(document).find('span.error-text').text('');
+                url: '{{ url('master-satuan/edit') }}/' + id,
+                type: 'get',
+                data: {
+                    _token: '{{ csrf_token() }}'
                 },
                 success: function(response) {
+                    // aktifkan tab dengan id tambah
+                    $('#daftar-tab').removeClass('active');
+                    $('#tambah-tab').addClass('active');
+                    $('#daftar').removeClass('show active');
+                    $('#tambah').addClass('show active');
 
-                    if (response.status == 'error') {
-                        $.each(response.message, function(prefix, val) {
-                            $('span.' + prefix + '_error').text(val[0]);
-                        });
-                    } else if (response.status == 'error2') {
-                        // tampilkan alert
-                        alert(response.message);
-                    } else {
-                        // fetch data
-                        fetchData();
+                    $('#id').val(response.data.id);
+                    $('#satuan').val(response.data.nama_satuan);
 
-                        // tampilkan alert
-                        alert(response.message);
-
-                        // aktifkan tab dengan id daftar
-                        $('#home-tab').addClass('active');
-                        $('#profile-tab').removeClass('active');
-                        $('#home').addClass('show');
-                        $('#profile').removeClass('show');
-                    }
+                    // ubah nama #tambah-tab dari "Tambah" {{ $sub_title }} menjadi "Ubah" {{ $sub_title }}
+                    $('#tambah-tab').text('Ubah {{ $sub_title }}');
                 }
             })
+        }
 
+        // jika selain #tambah-tab di klik
+        $('#daftar-tab').on('click', function() {
+            // kosongkan form
+            $('#formTambahData')[0].reset();
+            $('#id').val('');
+
+            // ubah nama #tambah-tab dari "Ubah" {{ $sub_title }} menjadi "Tambah" {{ $sub_title }}
+            $('#tambah-tab').text('Tambah {{ $sub_title }}');
         })
-
     </script>
 @endsection

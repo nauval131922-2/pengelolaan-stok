@@ -37,10 +37,9 @@ Route::middleware('auth')->group(function () {
     Route::controller(SatuanController::class)->group(function () {
         Route::get('/master-satuan', 'index')->name('master-satuan-index');
         Route::get('/master-satuan/fetch', 'fetch')->name('master-satuan-fetch');
-        Route::post('/master-satuan/tambah', 'tambah')->name('master-satuan-tambah');
-        // Route::post('/mata-pelajaran/simpan', 'simpan')->name('mata-pelajaran-simpan');
-        // Route::get('/mata-pelajaran/edit/{id}', 'edit')->name('mata-pelajaran-edit');
-        // Route::post('/mata-pelajaran/update/{id}', 'update')->name('mata-pelajaran-update');
+        Route::post('/master-satuan/simpan', 'simpan')->name('master-satuan-simpan');
+        Route::get('/master-satuan/edit/{id}', 'edit')->name('master-satuan-edit');
+        Route::post('/master-satuan/update/{id}', 'update')->name('master-satuan-update');
         Route::get('/master-satuan/hapus/{id}', 'hapus')->name('master-satuan-hapus');
     });
 
