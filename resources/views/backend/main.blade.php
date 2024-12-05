@@ -30,7 +30,13 @@
     <!-- App Css-->
     <link href="{{ asset('assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
 
+
+
+
     <script src="{{ asset('assets/libs/jquery/jquery.min.js') }}"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <style>
         .custom-container {
@@ -38,6 +44,46 @@
             max-width: 100%;
             padding-left: 15px;
             padding-right: 15px;
+        }
+    </style>
+
+    <style>
+        /* Custom Style for Select2 */
+        .select2-container--default .select2-selection--single {
+            background-color: #ffffff;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            height: 38px;
+            /* Adjust height to match Bootstrap's form-control */
+            padding: 0.375rem 0.75rem;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #495057;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .select2-container .select2-dropdown {
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+        }
+
+        .select2-container .select2-search--dropdown .select2-search__field {
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            border: 1px solid #ced4da;
+        }
+
+        .select2-container .select2-results__option--highlighted[aria-selected] {
+            background-color: #e9ecef;
+            color: #495057;
         }
     </style>
 
@@ -76,11 +122,12 @@
     <div class="rightbar-overlay"></div>
 
     <!-- JAVASCRIPT -->
-
     <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/libs/metismenu/metisMenu.min.js') }}"></script>
     <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
     <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
+
+
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -93,6 +140,8 @@
             });
         });
     </script>
+
+
 
     <script>
         $(document).ready(function() {
@@ -160,6 +209,24 @@
 
     <!-- Datatable init js -->
     <script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                placeholder: 'Select an option',
+                allowClear: true,
+                width: '100%',
+            });
+
+            // Fokus ke kotak pencarian ketika dropdown diklik 
+            $('.select2').on('select2:open', function() {
+                const searchField = document.querySelector('.select2-search__field');
+                if (searchField) {
+                    searchField.focus();
+                }
+            });
+        });
+    </script>
 
     <script src="{{ asset('assets/js/pages/dashboard.init.js') }}"></script>
 

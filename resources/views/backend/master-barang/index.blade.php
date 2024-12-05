@@ -45,6 +45,8 @@
                                                 <th>#</th>
                                                 <th>Action</th>
                                                 <th>Nama Barang</th>
+                                                <th>Kategori</th>
+                                                <th>Satuan</th>
                                                 {{-- @can('admin') --}}
 
                                                 {{-- @endcan --}}
@@ -55,11 +57,60 @@
                                 </div><!-- end col -->
                             </div>
 
+
+
                             <div class="tab-pane fade" id="tambah" role="tabpanel" aria-labelledby="tambah-tab">
                                 <form enctype="multipart/form-data" id="formTambahData" method="POST">
                                     @csrf
                                     <input class="form-control" type="hidden" name="id" id="id" value=""
                                         placeholder="">
+
+                                    <div class="row mb-1 mt-2">
+                                        <div class="col-lg-3 col-md-3">
+                                            <label for="kategori" class="col-sm-12 col-form-label">Kategori <span
+                                                    class="text-danger">*</span></label>
+
+                                            <div class="d-flex">
+                                                <!-- Tombol Reload -->
+                                                <button type="button" id="reload-kategori"
+                                                    class="btn btn-sm btn-outline-light ml-2" title="Reload kategori">
+                                                    <i class="fa fa-sync-alt"></i> <!-- Icon reload -->
+                                                </button>
+                                                <!-- Dropdown kategori -->
+                                                <select class="select2" name="kategori" id="kategori" required>
+                                                    <option value=""></option>
+                                                </select>
+                                            </div>
+
+                                            <div class="my-2">
+                                                <span class="text-danger error-text kategori_error"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 col-md-3">
+                                            <label for="satuan" class="col-sm-12 col-form-label">Satuan <span
+                                                    class="text-danger">*</span></label>
+
+                                            <div class="d-flex">
+                                                <!-- Tombol Reload -->
+                                                <button type="button" id="reload-satuan"
+                                                    class="btn btn-sm btn-outline-light ml-2" title="Reload Satuan">
+                                                    <i class="fa fa-sync-alt"></i> <!-- Icon reload -->
+                                                </button>
+                                                <!-- Dropdown Satuan -->
+                                                <select class="select2" name="satuan" id="satuan" required>
+                                                    <option value=""></option>
+                                                </select>
+                                            </div>
+
+                                            <div class="my-2">
+                                                <span class="text-danger error-text satuan_error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
 
                                     <div class="row mb-1 mt-2">
                                         <div class="col-lg-6 col-md-6">
@@ -71,22 +122,6 @@
                                                 <span class="text-danger error-text barang_error"></span>
                                             </div>
                                         </div>
-
-                                        <div class="dropdown">
-                                            <button class="btn btn-secondary dropdown-toggle" type="button"
-                                                id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                                                aria-expanded="false">
-                                                Dropdown button
-                                            </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                <input type="text" id="dropdownSearch" placeholder="Search...">
-                                                <a class="dropdown-item" href="#">Action</a>
-                                                <a class="dropdown-item" href="#">Another action</a>
-                                                <a class="dropdown-item" href="#">Something else here</a>
-                                            </div>
-                                        </div>
-
-
                                     </div>
 
                                     <div class="row mb-1">
@@ -115,7 +150,79 @@
             // buatkan alert saat pertama kali halaman di load
             fetchData();
 
+            // Memuat data pada saat halaman dimuat 
+            fetchSatuanData();
+
+            fetchKategoriData();
         });
+
+        // button reload satuan
+        $('#reload-satuan').on('click', function() {
+            fetchSatuanData();
+        });
+
+        // button reload kategori
+        $('#reload-kategori').on('click', function() {
+            fetchKategoriData();
+        })
+
+        // Fokus ke kotak pencarian ketika dropdown dibuka dan panggil fetchSatuanData 
+        $('#satuan').on('select2:open', function() {
+            // Panggil fetchSatuanData saat dropdown dibuka 
+            // fetchSatuanData();
+
+            const searchField = document.querySelector('.select2-search__field');
+            if (searchField) {
+                searchField.focus();
+            }
+
+        });
+
+        // Fokus ke kotak pencarian ketika dropdown dibuka dan panggil fetchKategoriData 
+        $('#kategori').on('select2:open', function() {
+            // Panggil fetchSatuanData saat dropdown dibuka 
+            // fetchSatuanData();
+
+            const searchField = document.querySelector('.select2-search__field');
+            if (searchField) {
+                searchField.focus();
+            }
+
+        });
+
+        // buatkan function fetchSatuanData
+        function fetchSatuanData() {
+            $.ajax({
+                url: '{{ route('master-barang-fetch-satuan') }}',
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    let satuanSelect = $('#satuan');
+                    satuanSelect.empty().append('<option value=""></option>');
+                    // Hapus opsi lama dan tambahkan placeholder 
+                    $.each(response.data, function(index, item) {
+                        satuanSelect.append(new Option(item.nama_satuan, item.id));
+                    });
+                }
+            });
+        }
+
+        // buatkan function fetchKategoriData
+        function fetchKategoriData() {
+            $.ajax({
+                url: '{{ route('master-barang-fetch-kategori') }}',
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    let kategoriSelect = $('#kategori');
+                    kategoriSelect.empty().append('<option value=""></option>');
+                    // Hapus opsi lama dan tambahkan placeholder 
+                    $.each(response.data, function(index, item) {
+                        kategoriSelect.append(new Option(item.nama_kategori, item.id));
+                    });
+                }
+            });
+        }
 
         // buatkan function fecthData
         function fetchData() {
@@ -149,7 +256,9 @@
                         table.row.add([
                             (key + 1),
                             editButton + deleteButton,
-                            value.nama_barang
+                            value.nama_barang,
+                            value.satuan.nama_satuan,
+                            value.kategori.nama_kategori
                         ]).draw(false);
                     });
                     table.columns.adjust().draw();
@@ -218,6 +327,8 @@
                             // kosongkan form
                             $('#formTambahData')[0].reset();
                             $('#id').val('');
+                            $('.select2').val(null).trigger('change');
+                            $(document).find('span.error-text').text('');
                         }
                     }
                 })
@@ -256,6 +367,8 @@
                             // kosongkan form
                             $('#formTambahData')[0].reset();
                             $('#id').val('');
+                            $('.select2').val(null).trigger('change');
+                            $(document).find('span.error-text').text('');
 
                             // ubah nama #tambah-tab dari "Ubah" {{ $sub_title }} menjadi "Tambah" {{ $sub_title }}
                             $('#tambah-tab').text('Tambah {{ $sub_title }}');
@@ -282,6 +395,8 @@
 
                     $('#id').val(response.data.id);
                     $('#barang').val(response.data.nama_barang);
+                    $('#satuan').val(response.data.satuan_id).trigger('change');
+                    $('#kategori').val(response.data.kategori_id).trigger('change');
 
                     // ubah nama #tambah-tab dari "Tambah" {{ $sub_title }} menjadi "Ubah" {{ $sub_title }}
                     $('#tambah-tab').text('Ubah {{ $sub_title }}');
@@ -294,21 +409,11 @@
             // kosongkan form
             $('#formTambahData')[0].reset();
             $('#id').val('');
+            $('.select2').val(null).trigger('change');
+            $(document).find('span.error-text').text('');
 
             // ubah nama #tambah-tab dari "Ubah" {{ $sub_title }} menjadi "Tambah" {{ $sub_title }}
             $('#tambah-tab').text('Tambah {{ $sub_title }}');
         })
-
-        document.getElementById('dropdownSearch').addEventListener('keyup', function() {
-            var searchQuery = this.value.toLowerCase();
-            var dropdownItems = document.querySelectorAll('.dropdown-menu .dropdown-item');
-            dropdownItems.forEach(function(item) {
-                if (item.textContent.toLowerCase().includes(searchQuery)) {
-                    item.style.display = '';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        });
     </script>
 @endsection

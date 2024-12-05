@@ -57,6 +57,10 @@ Route::middleware('auth')->group(function () {
     Route::controller(BarangController::class)->group(function () {
         Route::get('/master-barang', 'index')->name('master-barang-index');
         Route::get('/master-barang/fetch', 'fetch')->name('master-barang-fetch');
+        // fetch data dropdown satuan
+        Route::get('/master-barang/fetch-satuan', 'fetchSatuan')->name('master-barang-fetch-satuan');
+        // fetch data dropdown kategori
+        Route::get('/master-kategori/fetch-kategori', 'fetchKategori')->name('master-barang-fetch-kategori');
         Route::post('/master-barang/simpan', 'simpan')->name('master-barang-simpan');
         Route::get('/master-barang/edit/{id}', 'edit')->name('master-barang-edit');
         Route::post('/master-barang/update/{id}', 'update')->name('master-barang-update');

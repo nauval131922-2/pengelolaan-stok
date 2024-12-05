@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
+use App\Models\Satuan;
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,15 +19,36 @@ class BarangController extends Controller
         $title = 'Master Barang';
         $sub_title = 'Barang';
 
-        return view('backend.master-barang.index', compact('semua_barang', 'title', 'sub_title'));
+        $kategori = Kategori::all();
+        $satuan = Satuan::all();
+
+        return view('backend.master-barang.index', compact('semua_barang', 'title', 'sub_title', 'kategori', 'satuan'));
     }
 
     function fetch()
     {
-        $semua_barang = Barang::all();
+        $semua_barang = Barang::with('kategori', 'satuan')->get();
 
         return response()->json([
             'data' => $semua_barang
+        ]);
+    }
+
+    function fetchSatuan()
+    {
+        $satuan = Satuan::all();
+
+        return response()->json([
+            'data' => $satuan
+        ]);
+    }
+
+    function fetchKategori()
+    {
+        $kategori = Kategori::all();
+
+        return response()->json([
+            'data' => $kategori
         ]);
     }
 
@@ -45,6 +68,8 @@ class BarangController extends Controller
         // Validate the request data
         $validator = Validator::make($request->all(), [
             'barang' => 'required|unique:barangs,nama_barang',
+            'kategori' => 'required',
+            'satuan' => 'required',
         ]);
 
         // If validation fails, return error response
@@ -58,7 +83,8 @@ class BarangController extends Controller
         // Save the required data from the request
         $barang = new Barang;
         $barang->nama_barang = $request->barang;
-
+        $barang->kategori_id = $request->kategori;
+        $barang->satuan_id = $request->satuan;
 
         // If the user profile is successfully updated, return success response
         if ($barang->save()) {
@@ -106,6 +132,8 @@ class BarangController extends Controller
         // Validate the request data
         $validator = Validator::make($request->all(), [
             'barang' => 'required|unique:barangs,nama_barang,' . $id,
+            'kategori' => 'required',
+            'satuan' => 'required',
         ]);
 
         // If validation fails, return error response
@@ -119,6 +147,8 @@ class BarangController extends Controller
         // Save the required data from the request
         $barang = Barang::find($id);
         $barang->nama_barang = $request->barang;
+        $barang->kategori_id = $request->kategori;
+        $barang->satuan_id = $request->satuan;
 
         // If the user profile is successfully updated, return success response
         if ($barang->save()) {
