@@ -46,6 +46,7 @@
                                                 <th>Action</th>
                                                 <th>Nama Barang</th>
                                                 <th>Kategori</th>
+                                                <th>Qty</th>
                                                 <th>Satuan</th>
                                                 {{-- @can('admin') --}}
 
@@ -66,21 +67,35 @@
                                         placeholder="">
 
                                     <div class="row mb-1 mt-2">
-                                        <div class="col-lg-3 col-md-3">
-                                            <label for="kategori" class="col-sm-12 col-form-label">Kategori <span
+                                        <div class="col-lg-6 col-md-6">
+                                            <label for="nama_barang" class="col-sm-12 col-form-label">Nama Barang <span
                                                     class="text-danger">*</span></label>
 
                                             <div class="d-flex">
                                                 <!-- Tombol Reload -->
-                                                <button type="button" id="reload-kategori"
-                                                    class="btn btn-sm btn-outline-light ml-2" title="Reload kategori">
+                                                <button type="button" id="reload-nama-barang"
+                                                    class="btn btn-sm btn-outline-light ml-2" title="Reload nama_barang">
                                                     <i class="fa fa-sync-alt"></i> <!-- Icon reload -->
                                                 </button>
-                                                <!-- Dropdown kategori -->
-                                                <select class="select2" name="kategori" id="kategori" required>
+                                                <!-- Dropdown nama_barang -->
+                                                <select class="select2" name="nama_barang" id="nama_barang" required>
                                                     <option value=""></option>
                                                 </select>
                                             </div>
+
+                                            <div class="my-2">
+                                                <span class="text-danger error-text nama_barang_error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-1 mt-2">
+                                        <div class="col-lg-3 col-md-3">
+                                            <label for="kategori" class="col-sm-12 col-form-label">Kategori <span
+                                                    class="text-danger">*</span></label>
+
+                                            <input class="form-control" type="text" name="kategori" id="kategori"
+                                                value="" placeholder="" required readonly>
 
                                             <div class="my-2">
                                                 <span class="text-danger error-text kategori_error"></span>
@@ -91,17 +106,8 @@
                                             <label for="satuan" class="col-sm-12 col-form-label">Satuan <span
                                                     class="text-danger">*</span></label>
 
-                                            <div class="d-flex">
-                                                <!-- Tombol Reload -->
-                                                <button type="button" id="reload-satuan"
-                                                    class="btn btn-sm btn-outline-light ml-2" title="Reload Satuan">
-                                                    <i class="fa fa-sync-alt"></i> <!-- Icon reload -->
-                                                </button>
-                                                <!-- Dropdown Satuan -->
-                                                <select class="select2" name="satuan" id="satuan" required>
-                                                    <option value=""></option>
-                                                </select>
-                                            </div>
+                                            <input class="form-control" type="text" name="satuan" id="satuan"
+                                                value="" placeholder="" required readonly>
 
                                             <div class="my-2">
                                                 <span class="text-danger error-text satuan_error"></span>
@@ -114,12 +120,12 @@
 
                                     <div class="row mb-1 mt-2">
                                         <div class="col-lg-6 col-md-6">
-                                            <label for="barang" class="col-sm-12 col-form-label">Barang <span
+                                            <label for="qty" class="col-sm-12 col-form-label">Qty <span
                                                     class="text-danger">*</span></label>
-                                            <input class="form-control" type="text" name="barang" id="barang"
+                                            <input class="form-control" type="number" name="qty" id="qty"
                                                 value="" placeholder="" required>
                                             <div class="my-2">
-                                                <span class="text-danger error-text barang_error"></span>
+                                                <span class="text-danger error-text qty_error"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -147,41 +153,38 @@
     <script>
         $(document).ready(function() {
 
-            // buatkan alert saat pertama kali halaman di load
-            fetchData();
+            fetchData()
 
-            // Memuat data pada saat halaman dimuat
-            fetchSatuanData();
-
-            fetchKategoriData();
+            fetchNamaBarang();
         });
 
-        // button reload satuan
-        $('#reload-satuan').on('click', function() {
-            fetchSatuanData();
-        });
+        // #nama_barang on change, maka isi #kategori dan #satuan
+        $('#nama_barang').on('change', function() {
+            let id = $(this).val();
+            $.ajax({
+                url: '{{ url('barang-masuk/fetch-nama-barang/specific') }}/' + id,
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    $('#kategori').val(response.data.kategori);
+                    $('#satuan').val(response.data.satuan);
 
-        // button reload kategori
-        $('#reload-kategori').on('click', function() {
-            fetchKategoriData();
+                    // jika #nama_barang kosong
+                    if (id == '') {
+                        $('#kategori').val('');
+                        $('#satuan').val('');
+                    }
+                }
+            });
         })
 
-        // Fokus ke kotak pencarian ketika dropdown dibuka dan panggil fetchSatuanData
-        $('#satuan').on('select2:open', function() {
-            // Panggil fetchSatuanData saat dropdown dibuka
-            // fetchSatuanData();
-
-            const searchField = document.querySelector('.select2-search__field');
-            if (searchField) {
-                searchField.focus();
-            }
-
+        // button reload
+        $('#reload-nama-barang').on('click', function() {
+            fetchNamaBarang();
         });
 
-        // Fokus ke kotak pencarian ketika dropdown dibuka dan panggil fetchKategoriData
-        $('#kategori').on('select2:open', function() {
-            // Panggil fetchSatuanData saat dropdown dibuka
-            // fetchSatuanData();
+        // Fokus ke kotak pencarian ketika dropdown dibuka dan panggil fetchSatuanData
+        $('#nama_barang').on('select2:open', function() {
 
             const searchField = document.querySelector('.select2-search__field');
             if (searchField) {
@@ -191,34 +194,17 @@
         });
 
         // buatkan function fetchSatuanData
-        function fetchSatuanData() {
+        function fetchNamaBarang() {
             $.ajax({
-                url: '{{ route('master-barang-fetch-satuan') }}',
+                url: '{{ route('barang-masuk-fetch-nama-barang') }}',
                 method: 'GET',
                 dataType: 'json',
                 success: function(response) {
-                    let satuanSelect = $('#satuan');
-                    satuanSelect.empty().append('<option value=""></option>');
+                    let namaBarangSelect = $('#nama_barang');
+                    namaBarangSelect.empty().append('<option value=""></option>');
                     // Hapus opsi lama dan tambahkan placeholder
                     $.each(response.data, function(index, item) {
-                        satuanSelect.append(new Option(item.nama_satuan, item.id));
-                    });
-                }
-            });
-        }
-
-        // buatkan function fetchKategoriData
-        function fetchKategoriData() {
-            $.ajax({
-                url: '{{ route('master-barang-fetch-kategori') }}',
-                method: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    let kategoriSelect = $('#kategori');
-                    kategoriSelect.empty().append('<option value=""></option>');
-                    // Hapus opsi lama dan tambahkan placeholder
-                    $.each(response.data, function(index, item) {
-                        kategoriSelect.append(new Option(item.nama_kategori, item.id));
+                        namaBarangSelect.append(new Option(item.nama_barang, item.id));
                     });
                 }
             });
@@ -227,7 +213,7 @@
         // buatkan function fecthData
         function fetchData() {
             $.ajax({
-                url: '{{ route('master-barang-fetch') }}',
+                url: '{{ route('barang-masuk-fetch') }}',
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
@@ -257,8 +243,9 @@
                             (key + 1),
                             editButton + deleteButton,
                             value.nama_barang,
-                            value.kategori.nama_kategori,
                             value.satuan.nama_satuan,
+                            value.kategori.nama_kategori,
+                            value.qty
                         ]).draw(false);
                     });
                     table.columns.adjust().draw();
@@ -270,7 +257,7 @@
             if (confirm('Apakah anda yakin ingin menghapus data ini?')) {
 
                 $.ajax({
-                    url: '{{ url('master-barang/hapus') }}/' + id,
+                    url: '{{ url('barang-masuk/hapus') }}/' + id,
                     type: 'get',
                     data: {
                         _token: '{{ csrf_token() }}'
@@ -294,7 +281,7 @@
 
             if (id == '') {
                 $.ajax({
-                    url: '{{ route('master-barang-simpan') }}',
+                    url: '{{ route('barang-masuk-simpan') }}',
                     type: 'POST',
                     data: formData,
                     contentType: false,
@@ -334,7 +321,7 @@
                 })
             } else {
                 $.ajax({
-                    url: '{{ url('master-barang/update') }}/' + id,
+                    url: '{{ url('barang-masuk/update') }}/' + id,
                     type: 'POST',
                     data: formData,
                     contentType: false,
@@ -381,7 +368,7 @@
         // buatkan function editData
         function editData(id) {
             $.ajax({
-                url: '{{ url('master-barang/edit') }}/' + id,
+                url: '{{ url('barang-masuk/edit') }}/' + id,
                 type: 'get',
                 data: {
                     _token: '{{ csrf_token() }}'
@@ -394,7 +381,7 @@
                     $('#tambah').addClass('show active');
 
                     $('#id').val(response.data.id);
-                    $('#barang').val(response.data.nama_barang);
+                    $('#barang_masuk').val(response.data.nama_barang_masuk);
                     $('#satuan').val(response.data.satuan_id).trigger('change');
                     $('#kategori').val(response.data.kategori_id).trigger('change');
 

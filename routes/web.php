@@ -2,11 +2,13 @@
 
 use App\Models\Barang;
 use App\Models\Kategori;
+use App\Models\BarangMasuk;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\BarangMasukController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,11 +62,22 @@ Route::middleware('auth')->group(function () {
         // fetch data dropdown satuan
         Route::get('/master-barang/fetch-satuan', 'fetchSatuan')->name('master-barang-fetch-satuan');
         // fetch data dropdown kategori
-        Route::get('/master-kategori/fetch-kategori', 'fetchKategori')->name('master-barang-fetch-kategori');
+        Route::get('/master-barang/fetch-kategori', 'fetchKategori')->name('master-barang-fetch-kategori');
         Route::post('/master-barang/simpan', 'simpan')->name('master-barang-simpan');
         Route::get('/master-barang/edit/{id}', 'edit')->name('master-barang-edit');
         Route::post('/master-barang/update/{id}', 'update')->name('master-barang-update');
         Route::get('/master-barang/hapus/{id}', 'hapus')->name('master-barang-hapus');
+    });
+
+    Route::controller(BarangMasukController::class)->group(function () {
+        Route::get('/barang-masuk', 'index')->name('barang-masuk-index');
+        Route::get('/barang-masuk/fetch', 'fetch')->name('barang-masuk-fetch');
+        Route::get('/barang-masuk/fetch-nama-barang', 'fetchNamaBarang')->name('barang-masuk-fetch-nama-barang');
+        Route::post('/barang-masuk/simpan', 'simpan')->name('barang-masuk-simpan');
+        Route::get('/barang-masuk/fetch-nama-barang/specific/{id}', 'fetchNamaBarangSpecific')->name('barang-masuk-fetch-nama-barang-specific');
+        Route::get('/barang-masuk/edit/{id}', 'edit')->name('barang-masuk-edit');
+        Route::post('/barang-masuk/update/{id}', 'update')->name('barang-masuk-update');
+        Route::get('/barang-masuk/hapus/{id}', 'hapus')->name('barang-masuk-hapus');
     });
 
 });
