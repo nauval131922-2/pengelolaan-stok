@@ -16,7 +16,7 @@
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="javascript: void(0);">Stok</a></li>
                             <li class="breadcrumb-item active">Mutasi</li>
-                            <li class="breadcrumb-item active">Barang Masuk</li>
+                            <li class="breadcrumb-item active">Barang Keluar</li>
                         </ol>
                     </div>
                 </div>
@@ -183,7 +183,7 @@
         $('#nama_barang').on('change', function() {
             let id = $(this).val();
             $.ajax({
-                url: '{{ url('barang-masuk/fetch-nama-barang/specific') }}/' + id,
+                url: '{{ url('barang-keluar/fetch-nama-barang/specific') }}/' + id,
                 method: 'GET',
                 dataType: 'json',
                 success: function(response) {
@@ -217,7 +217,7 @@
         // buatkan function fetchSatuanData
         function fetchNamaBarang() {
             $.ajax({
-                url: '{{ route('barang-masuk-fetch-nama-barang') }}',
+                url: '{{ route('barang-keluar-fetch-nama-barang') }}',
                 method: 'GET',
                 dataType: 'json',
                 success: function(response) {
@@ -234,7 +234,7 @@
         // buatkan function fecthData
         function fetchData() {
             $.ajax({
-                url: '{{ route('barang-masuk-fetch') }}',
+                url: '{{ route('barang-keluar-fetch') }}',
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
@@ -279,7 +279,7 @@
             if (confirm('Apakah anda yakin ingin menghapus data ini?')) {
 
                 $.ajax({
-                    url: '{{ url('barang-masuk/hapus') }}/' + id,
+                    url: '{{ url('barang-keluar/hapus') }}/' + id,
                     type: 'get',
                     data: {
                         _token: '{{ csrf_token() }}'
@@ -303,7 +303,7 @@
 
             if (id == '') {
                 $.ajax({
-                    url: '{{ route('barang-masuk-simpan') }}',
+                    url: '{{ route('barang-keluar-simpan') }}',
                     type: 'POST',
                     data: formData,
                     contentType: false,
@@ -343,7 +343,7 @@
                 })
             } else {
                 $.ajax({
-                    url: '{{ url('barang-masuk/update') }}/' + id,
+                    url: '{{ url('barang-keluar/update') }}/' + id,
                     type: 'POST',
                     data: formData,
                     contentType: false,
@@ -390,7 +390,7 @@
         // buatkan function editData
         function editData(id) {
             $.ajax({
-                url: '{{ url('barang-masuk/edit') }}/' + id,
+                url: '{{ url('barang-keluar/edit') }}/' + id,
                 type: 'get',
                 data: {
                     _token: '{{ csrf_token() }}'

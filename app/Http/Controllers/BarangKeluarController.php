@@ -5,40 +5,40 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Models\Satuan;
 use App\Models\Kategori;
-use App\Models\BarangMasuk;
+use App\Models\BarangKeluar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class BarangMasukController extends Controller
+class BarangKeluarController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $semua_barang_masuk = BarangMasuk::all();
-        $title = 'Barang Masuk';
-        $sub_title = 'Barang Masuk';
+        $semua_barang_keluar = BarangKeluar::all();
+        $title = 'Barang Keluar';
+        $sub_title = 'Barang Keluar';
 
         $kategori = Kategori::all();
         $satuan = Satuan::all();
 
-        return view('backend.barang_masuk.index', compact('semua_barang_masuk', 'title', 'sub_title', 'kategori', 'satuan'));
+        return view('backend.barang_keluar.index', compact('semua_barang_keluar', 'title', 'sub_title', 'kategori', 'satuan'));
     }
 
     function fetch()
     {
-        $semua_barang_masuk = BarangMasuk::with('barang')->get();
+        $semua_barang_keluar = BarangKeluar::with('barang')->get();
 
-        foreach ($semua_barang_masuk as $barang_masuk) {
-            $barang = $barang_masuk->barang;
+        foreach ($semua_barang_keluar as $barang_keluar) {
+            $barang = $barang_keluar->barang;
             $kategori = Kategori::find($barang->kategori_id);
             $satuan = Satuan::find($barang->satuan_id);
             $barang->nama_kategori = $kategori->nama_kategori;
             $barang->nama_satuan = $satuan->nama_satuan;
         }
 
-        return response()->json(['data' => $semua_barang_masuk]);
+        return response()->json(['data' => $semua_barang_keluar]);
     }
 
     function fetchNamaBarang()
@@ -100,13 +100,13 @@ class BarangMasukController extends Controller
         }
 
         // Save the required data from the request
-        $barang_masuk = new BarangMasuk;
-        $barang_masuk->barang_id = $request->nama_barang;
-        $barang_masuk->qty = $request->qty;
-        $barang_masuk->tanggal = $request->tanggal;
+        $barang_keluar = new BarangKeluar;
+        $barang_keluar->barang_id = $request->nama_barang;
+        $barang_keluar->qty = $request->qty;
+        $barang_keluar->tanggal = $request->tanggal;
 
         // If the user profile is successfully updated, return success response
-        if ($barang_masuk->save()) {
+        if ($barang_keluar->save()) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Data berhasil disimpan!'
@@ -123,7 +123,7 @@ class BarangMasukController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(BarangMasuk $barang_masuk)
+    public function show(BarangKeluar $barang_keluar)
     {
         //
     }
@@ -133,12 +133,12 @@ class BarangMasukController extends Controller
      */
     public function edit($id)
     {
-        $barang_masuk = BarangMasuk::find($id);
+        $barang_keluar = BarangKeluar::find($id);
 
-        $title = 'Ubah BarangMasuk';
+        $title = 'Ubah BarangKeluar';
 
         return response()->json([
-            'data' => $barang_masuk,
+            'data' => $barang_keluar,
             'title' => $title
         ]);
     }
@@ -166,13 +166,13 @@ class BarangMasukController extends Controller
         }
 
         // Save the required data from the request
-        $barang_masuk = BarangMasuk::find($id);
-        $barang_masuk->barang_id = $request->nama_barang;
-        $barang_masuk->qty = $request->qty;
-        $barang_masuk->tanggal = $request->tanggal;
+        $barang_keluar = BarangKeluar::find($id);
+        $barang_keluar->barang_id = $request->nama_barang;
+        $barang_keluar->qty = $request->qty;
+        $barang_keluar->tanggal = $request->tanggal;
 
         // If the user profile is successfully updated, return success response
-        if ($barang_masuk->save()) {
+        if ($barang_keluar->save()) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Data berhasil disimpan!'
@@ -191,10 +191,10 @@ class BarangMasukController extends Controller
      */
     public function hapus($id)
     {
-        $barang_masuk = BarangMasuk::find($id);
+        $barang_keluar = BarangKeluar::find($id);
 
         // jika berhasil dihapus
-        if ($barang_masuk->delete()) {
+        if ($barang_keluar->delete()) {
             return response()->json(['status' => 'success', 'message' => 'Data berhasil dihapus.']);
         } else {
             return response()->json(['status' => 'error', 'message' => 'Gagal menghapus data.']);

@@ -137,7 +137,7 @@ box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-apps" role="button"
                             style="color:#6c757d!important">
-                            </i>Stok <div class="arrow-down"></div>
+                            Stok <div class="arrow-down"></div>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="topnav-apps">
 
@@ -161,7 +161,7 @@ box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="topnav-data">
                                     <a href="{{ route('barang-masuk-index') }}" class="dropdown-item">Barang Masuk</a>
-                                    <a href="data-inbox.html" class="dropdown-item">Barang Keluar</a>
+                                    <a href="{{ route('barang-keluar-index') }}" class="dropdown-item">Barang Keluar</a>
                                 </div>
                             </div>
 
@@ -171,10 +171,22 @@ box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
                                     Laporan <div class="arrow-down"></div>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="topnav-data">
-                                    <a href="data-inbox.html" class="dropdown-item">Saldo Barang</a>
+                                    <a href="{{ route('saldo-barang-index') }}" class="dropdown-item">Saldo Barang</a>
                                     <a href="data-inbox.html" class="dropdown-item">Kartu Stok</a>
                                 </div>
                             </div>
+                        </div>
+                    </li>
+
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle arrow-none" href="#" id="topnav-apps" role="button"
+                            style="color:#6c757d!important">
+                            <i class="ri-settings-3-line me-2"></i> Sistem <div class="arrow-down"></div>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="topnav-apps">
+                            <a href="#" class="dropdown-item">Pengguna</a>
+
                         </div>
                     </li>
 

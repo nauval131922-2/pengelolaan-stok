@@ -9,6 +9,8 @@ use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\BarangMasukController;
+use App\Http\Controllers\BarangKeluarController;
+use App\Http\Controllers\SaldoBarangController;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,6 +82,22 @@ Route::middleware('auth')->group(function () {
         Route::get('/barang-masuk/hapus/{id}', 'hapus')->name('barang-masuk-hapus');
     });
 
+    Route::controller(BarangKeluarController::class)->group(function () {
+        Route::get('/barang-keluar', 'index')->name('barang-keluar-index');
+        Route::get('/barang-keluar/fetch', 'fetch')->name('barang-keluar-fetch');
+        Route::get('/barang-keluar/fetch-nama-barang', 'fetchNamaBarang')->name('barang-keluar-fetch-nama-barang');
+        Route::post('/barang-keluar/simpan', 'simpan')->name('barang-keluar-simpan');
+        Route::get('/barang-keluar/fetch-nama-barang/specific/{id}', 'fetchNamaBarangSpecific')->name('barang-keluar-fetch-nama-barang-specific');
+        Route::get('/barang-keluar/edit/{id}', 'edit')->name('barang-keluar-edit');
+        Route::post('/barang-keluar/update/{id}', 'update')->name('barang-keluar-update');
+        Route::get('/barang-keluar/hapus/{id}', 'hapus')->name('barang-keluar-hapus');
+    });
+
+    Route::controller(SaldoBarangController::class)->group(function () {
+        Route::get('/saldo-barang', 'index')->name('saldo-barang-index');
+        Route::get('/saldo-barang/fetch', 'fetch')->name('saldo-barang-fetch');
+    });
+
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
