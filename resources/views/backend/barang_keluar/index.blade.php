@@ -44,6 +44,8 @@
                             <div class="tab-pane fade show active" id="daftar" role="tabpanel"
                                 aria-labelledby="daftar-tab">
                                 <div class="col-xl-12 col-md-12" style="padding-top: 15px">
+                                    
+
                                     <table id="datatable"
                                         class="table table-striped table-bordered dt-responsive nowrap dataTable no-footer dtr-inline collapsed"
                                         style="border-collapse: collapse; border-spacing: 0px; width: 100%;" role="grid"
@@ -72,7 +74,7 @@
                             <div class="tab-pane fade" id="tambah" role="tabpanel" aria-labelledby="tambah-tab">
                                 <form enctype="multipart/form-data" id="formTambahData" method="POST">
                                     @csrf
-                                    <input class="form-control" type="hidden" name="id" id="id" value=""
+                                    <input class="form-control" type="hidden" name="idData" id="id" value=""
                                         placeholder="">
 
                                     <div class="row mb-1 mt-2">
@@ -112,11 +114,10 @@
 
                                     <div class="row mb-1 mt-2">
                                         <div class="col-lg-3 col-md-3">
-                                            <label for="kategori" class="col-sm-12 col-form-label">Kategori <span
-                                                    class="text-danger">*</span></label>
+                                            <label for="kategori" class="col-sm-12 col-form-label">Kategori</label>
 
                                             <input class="form-control" type="text" name="kategori" id="kategori"
-                                                value="" placeholder="" required readonly>
+                                                value="" placeholder="" readonly>
 
                                             <div class="my-2">
                                                 <span class="text-danger error-text kategori_error"></span>
@@ -124,11 +125,10 @@
                                         </div>
 
                                         <div class="col-lg-3 col-md-3">
-                                            <label for="satuan" class="col-sm-12 col-form-label">Satuan <span
-                                                    class="text-danger">*</span></label>
+                                            <label for="satuan" class="col-sm-12 col-form-label">Satuan</label>
 
                                             <input class="form-control" type="text" name="satuan" id="satuan"
-                                                value="" placeholder="" required readonly>
+                                                value="" placeholder="" readonly>
 
                                             <div class="my-2">
                                                 <span class="text-danger error-text satuan_error"></span>
@@ -137,7 +137,16 @@
                                     </div>
 
 
-
+                                    <div class="row mb-1 mt-2">
+                                        <div class="col-lg-6 col-md-6">
+                                            <label for="saldo" class="col-sm-12 col-form-label">Saldo</label>
+                                            <input class="form-control" type="number" name="saldo" id="saldo"
+                                                value="" placeholder="" readonly>
+                                            <div class="my-2">
+                                                <span class="text-danger error-text saldo_error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     <div class="row mb-1 mt-2">
                                         <div class="col-lg-6 col-md-6">
@@ -179,25 +188,80 @@
             fetchNamaBarang();
         });
 
-        // #nama_barang on change, maka isi #kategori dan #satuan
-        $('#nama_barang').on('change', function() {
-            let id = $(this).val();
+        function cekQty() {
+            let qty = parseFloat($('#qty').val()); // Ambil nilai qty yang dimasukkan
+            let saldo = parseFloat($('#saldo').val()); // Ambil nilai saldo dari elemen yang sesuai
+
+            // Periksa apakah qty dan saldo adalah angka yang valid
+            if (isNaN(qty) || isNaN(saldo)) {
+                $('.qty_error').text('Jumlah qty atau saldo tidak valid.');
+                return;
+            }
+
+            // Periksa apakah qty lebih besar dari saldo
+            if (qty > saldo) {
+                // Tampilkan pesan error
+                $('.qty_error').text('Jumlah qty tidak boleh lebih besar dari saldo yang tersedia (' + saldo + ').');
+            } else {
+                // Hapus pesan error jika qty valid
+                $('.qty_error').text('');
+            }
+        }
+
+        // Panggil cekQty saat input qty atau saldo berubah
+        $('#qty').on('input', function() {
+            cekQty();
+        });
+
+
+
+
+
+        function fetchDataSpecific() {
+            let id = $('#nama_barang').val(); // Ambil ID dari dropdown
+            let tanggal = $('#tanggal').val(); // Ambil tanggal dari input dengan ID 'tanggal'
+            let idBarangKeluar = $('#id').val();
+
+            // Jika id kosong, reset elemen
+            if (id === '') {
+                $('#kategori').val('');
+                $('#satuan').val('');
+                $('#saldo').val('');
+                return; // Hentikan eksekusi AJAX jika ID kosong
+            }
+
+            // Kirim request AJAX
             $.ajax({
-                url: '{{ url('barang-keluar/fetch-nama-barang/specific') }}/' + id,
+                url: '{{ url('barang-keluar/fetch-nama-barang/specific') }}/' + id + '?tanggal=' +
+                    tanggal + '&idBarangKeluar=' + idBarangKeluar, // Format URL yang benar
                 method: 'GET',
                 dataType: 'json',
                 success: function(response) {
+                    // Isi elemen dengan data yang diterima
                     $('#kategori').val(response.data.kategori);
                     $('#satuan').val(response.data.satuan);
+                    $('#saldo').val(response.data.saldo_barang);
 
-                    // jika #nama_barang kosong
-                    if (id == '') {
-                        $('#kategori').val('');
-                        $('#satuan').val('');
-                    }
+                    cekQty();
+                },
+                error: function(xhr, status, error) {
+                    // Penanganan jika ada error
+                    console.error("Error:", error);
+                    alert('Terjadi kesalahan saat mengambil data.');
                 }
             });
-        })
+        }
+
+        // Trigger saat #nama_barang berubah
+        $('#nama_barang').on('change', function() {
+            fetchDataSpecific(); // Panggil fungsi untuk mengambil data
+        });
+
+        // Trigger saat #tanggal berubah
+        $('#tanggal').on('change', function() {
+            fetchDataSpecific(); // Panggil fungsi untuk mengambil data
+        });
+
 
         // button reload
         $('#reload-nama-barang').on('click', function() {
@@ -301,6 +365,22 @@
             // deklarasikan id
             let id = $('#id').val();
 
+            // Ambil nilai qty dan saldo
+            let qty = $('#qty').val();
+            let saldo = $('#saldo').val(); // Misalnya saldo disimpan dalam elemen dengan id 'saldo'
+
+            // Pastikan qty dan saldo dalam bentuk angka
+            qty = parseFloat(qty);
+            saldo = parseFloat(saldo);
+
+            // Cek apakah qty melebihi saldo
+            if (qty > saldo) {
+                // Tampilkan alert jika qty melebihi saldo
+                alert('Jumlah qty tidak boleh lebih besar dari saldo yang tersedia (' + saldo + ').');
+                return; // Hentikan eksekusi jika qty lebih besar dari saldo
+            }
+
+            // Jika id kosong (untuk simpan data baru)
             if (id == '') {
                 $.ajax({
                     url: '{{ route('barang-keluar-simpan') }}',
@@ -312,13 +392,11 @@
                         $(document).find('span.error-text').text('');
                     },
                     success: function(response) {
-
                         if (response.status == 'error') {
                             $.each(response.message, function(prefix, val) {
                                 $('span.' + prefix + '_error').text(val[0]);
                             });
                         } else if (response.status == 'error2') {
-                            // tampilkan alert
                             alert(response.message);
                         } else {
                             // fetch data
@@ -340,8 +418,8 @@
                             $(document).find('span.error-text').text('');
                         }
                     }
-                })
-            } else {
+                });
+            } else { // Jika id ada (untuk update data)
                 $.ajax({
                     url: '{{ url('barang-keluar/update') }}/' + id,
                     type: 'POST',
@@ -352,13 +430,11 @@
                         $(document).find('span.error-text').text('');
                     },
                     success: function(response) {
-
                         if (response.status == 'error') {
                             $.each(response.message, function(prefix, val) {
                                 $('span.' + prefix + '_error').text(val[0]);
                             });
                         } else if (response.status == 'error2') {
-                            // tampilkan alert
                             alert(response.message);
                         } else {
                             // fetch data
@@ -383,35 +459,48 @@
                             $('#tambah-tab').text('Tambah {{ $sub_title }}');
                         }
                     }
-                })
+                });
             }
         });
+
+
 
         // buatkan function editData
         function editData(id) {
             $.ajax({
-                url: '{{ url('barang-keluar/edit') }}/' + id,
-                type: 'get',
-                data: {
-                    _token: '{{ csrf_token() }}'
-                },
+                url: '{{ url('barang-keluar/edit') }}/' + id, // Sesuaikan URL sesuai kebutuhan Anda
+                type: 'GET',
                 success: function(response) {
-                    // aktifkan tab dengan id tambah
-                    $('#daftar-tab').removeClass('active');
-                    $('#tambah-tab').addClass('active');
-                    $('#daftar').removeClass('show active');
-                    $('#tambah').addClass('show active');
+                    // Periksa apakah data berhasil ditemukan
+                    if (response && response.data) {
+                        // Aktifkan tab dengan id tambah (edit)
+                        $('#daftar-tab').removeClass('active');
+                        $('#tambah-tab').addClass('active');
+                        $('#daftar').removeClass('show active');
+                        $('#tambah').addClass('show active');
 
-                    $('#id').val(response.data.id);
-                    $('#tanggal').val(response.data.tanggal);
-                    $('#nama_barang').val(response.data.barang_id).trigger('change');
-                    $('#qty').val(response.data.qty);
+                        // Isi field dengan data yang diterima
+                        $('#id').val(response.data.id);
+                        $('#tanggal').val(response.data.tanggal);
+                        $('#nama_barang').val(response.data.barang_id).trigger('change');
+                        $('#qty').val(response.data.qty);
 
-                    // ubah nama #tambah-tab dari "Tambah" {{ $sub_title }} menjadi "Ubah" {{ $sub_title }}
-                    $('#tambah-tab').text('Ubah {{ $sub_title }}');
+                        // Jika ada field lain seperti keterangan, sesuaikan juga
+                        // $('#keterangan').val(response.data.keterangan);
+
+                        // Ubah nama tab dari "Tambah" menjadi "Ubah"
+                        $('#tambah-tab').text('Ubah {{ $sub_title }}');
+                    } else {
+                        alert('Data tidak ditemukan.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Terjadi kesalahan saat memuat data: ' + error);
                 }
-            })
+            });
         }
+
+
 
         // jika selain #tambah-tab di klik
         $('#daftar-tab').on('click', function() {

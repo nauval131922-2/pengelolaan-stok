@@ -25,10 +25,10 @@ padding-right: 15px;
         ">
                 <a href="{{ route('dashboard') }}" class="logo logo-dark">
                     <span class="logo-sm">
-                        <img src="{{ asset('assets/images/favicon.png') }}" alt="logo-sm" height="22">
+                        <img src="{{ asset('assets/images/logo-login-2.png') }}" alt="logo-sm" height="22">
                     </span>
                     <span class="logo-lg">
-                        <img src="{{ asset('assets/images/favicon.png') }}" alt="logo-dark" height="20">
+                        <img src="{{ asset('assets/images/logo-login-2.png') }}" alt="logo-dark" height="20">
                     </span>
                 </a>
 

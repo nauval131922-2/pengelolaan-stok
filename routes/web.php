@@ -24,7 +24,7 @@ use App\Http\Controllers\SaldoBarangController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Route::get('/dashboard', function () {
@@ -95,9 +95,8 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(SaldoBarangController::class)->group(function () {
         Route::get('/saldo-barang', 'index')->name('saldo-barang-index');
-        Route::get('/saldo-barang/fetch', 'fetch')->name('saldo-barang-fetch');
+        Route::get('/saldo-barang/fetch/{tanggal}', 'fetch')->name('saldo-barang-fetch');
     });
-
 });
 
 require __DIR__ . '/auth.php';

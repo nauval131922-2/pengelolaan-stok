@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Models\Satuan;
 use App\Models\Kategori;
+use App\Models\BarangMasuk;
 use App\Models\BarangKeluar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -50,24 +51,64 @@ class BarangKeluarController extends Controller
         ]);
     }
 
-    function fetchNamaBarangSpecific($id)
+    public function fetchNamaBarangSpecific($id, Request $request)
     {
+        // Ambil parameter 'tanggal' dari query string (URL)
+        $tanggal = $request->query('tanggal');
+
+        // ambil parameter 'id' dari request
+        $idBarangKeluar = $request->query('idBarangKeluar');
+
+        // Ambil data barang berdasarkan id
         $nama_barang = Barang::where('id', $id)->first();
 
-        // nama kategori dan satuan
+        // Cek apakah barang ada
+        if (!$nama_barang) {
+            return response()->json(['error' => 'Barang tidak ditemukan'], 404);
+        }
+
+        // Ambil data kategori dan satuan barang
         $kategori = Kategori::find($nama_barang->kategori_id);
         $satuan = Satuan::find($nama_barang->satuan_id);
 
-        // return response
+        // Hitung qty_masuk dan qty_keluar berdasarkan tanggal jika ada
+        if ($tanggal) {
+            $qty_masuk = BarangMasuk::where('barang_id', $nama_barang->id)
+                ->whereDate('tanggal', '<=', $tanggal)
+                ->sum('qty');
+
+            // jika request $id ada, maka kecualikan data dengan id yang sama
+            if ($idBarangKeluar) {
+                $qty_keluar = BarangKeluar::where('barang_id', $nama_barang->id)
+                    ->where('id', '!=', $idBarangKeluar)
+                    ->whereDate('tanggal', '<=', $tanggal)
+                    ->sum('qty');
+            } else {
+                $qty_keluar = BarangKeluar::where('barang_id', $nama_barang->id)
+                    ->whereDate('tanggal', '<=', $tanggal)
+                    ->sum('qty');
+            }
+        } else {
+            // Jika tidak ada tanggal, hitung berdasarkan semua data
+            $qty_masuk = BarangMasuk::where('barang_id', $nama_barang->id)->sum('qty');
+            $qty_keluar = BarangKeluar::where('barang_id', $nama_barang->id)->sum('qty');
+        }
+
+        // Hitung saldo barang
+        $saldo_barang = $qty_masuk - $qty_keluar;
+
+        // Kembalikan response JSON
         return response()->json([
             'data' => [
                 'id' => $nama_barang->id,
                 'nama_barang' => $nama_barang->nama_barang,
                 'kategori' => $kategori->nama_kategori,
-                'satuan' => $satuan->nama_satuan
+                'satuan' => $satuan->nama_satuan,
+                'saldo_barang' => $saldo_barang
             ],
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -85,8 +126,6 @@ class BarangKeluarController extends Controller
         // Validate the request data
         $validator = Validator::make($request->all(), [
             'nama_barang' => 'required',
-            'kategori' => 'required',
-            'satuan' => 'required',
             'qty' => 'required',
             'tanggal' => 'required',
         ]);
@@ -135,7 +174,7 @@ class BarangKeluarController extends Controller
     {
         $barang_keluar = BarangKeluar::find($id);
 
-        $title = 'Ubah BarangKeluar';
+        $title = 'Ubah Barang Keluar';
 
         return response()->json([
             'data' => $barang_keluar,
