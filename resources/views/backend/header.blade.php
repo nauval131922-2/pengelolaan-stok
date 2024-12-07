@@ -172,7 +172,7 @@ box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="topnav-data">
                                     <a href="{{ route('saldo-barang-index') }}" class="dropdown-item">Saldo Barang</a>
-                                    <a href="data-inbox.html" class="dropdown-item">Kartu Stok</a>
+                                    <a href="{{ route('kartu-stok-index') }}" class="dropdown-item">Kartu Stok</a>
                                 </div>
                             </div>
                         </div>

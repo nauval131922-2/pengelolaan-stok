@@ -213,12 +213,13 @@
     <script>
         $(document).ready(function() {
             $('.select2').select2({
-                placeholder: 'Select an option',
+                placeholder: '{{ $placeholderSelect2 }}', // Gunakan Blade untuk menyisipkan variabel
                 allowClear: true,
                 width: '100%',
             });
 
-            // Fokus ke kotak pencarian ketika dropdown diklik 
+
+            // Fokus ke kotak pencarian ketika dropdown diklik
             $('.select2').on('select2:open', function() {
                 const searchField = document.querySelector('.select2-search__field');
                 if (searchField) {

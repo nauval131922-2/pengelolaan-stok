@@ -182,6 +182,12 @@
         // #nama_barang on change, maka isi #kategori dan #satuan
         $('#nama_barang').on('change', function() {
             let id = $(this).val();
+            // Jika id kosong, reset elemen
+            if (id === '') {
+                $('#kategori').val('');
+                $('#satuan').val('');
+                return; // Hentikan eksekusi AJAX jika ID kosong
+            }
             $.ajax({
                 url: '{{ url('barang-masuk/fetch-nama-barang/specific') }}/' + id,
                 method: 'GET',

@@ -22,10 +22,12 @@ class SaldoBarangController extends Controller
         $title = 'Saldo Barang';
         $sub_title = 'Saldo Barang';
 
+        $placeholderSelect2 = '';
+
         $kategori = Kategori::all();
         $satuan = Satuan::all();
 
-        return view('backend.saldo_barang.index', compact('semua_saldo_barang', 'title', 'sub_title', 'kategori', 'satuan'));
+        return view('backend.saldo_barang.index', compact('semua_saldo_barang', 'title', 'sub_title', 'kategori', 'satuan', 'placeholderSelect2'));
     }
 
     public function fetch($tanggal)

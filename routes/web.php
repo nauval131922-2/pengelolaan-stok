@@ -10,6 +10,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\BarangMasukController;
 use App\Http\Controllers\BarangKeluarController;
+use App\Http\Controllers\KartuStokController;
 use App\Http\Controllers\SaldoBarangController;
 
 /*
@@ -28,7 +29,9 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $placeholderSelect2 = '';
+
+    return view('dashboard', compact('placeholderSelect2'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -97,6 +100,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/saldo-barang', 'index')->name('saldo-barang-index');
         Route::get('/saldo-barang/fetch/{tanggal}', 'fetch')->name('saldo-barang-fetch');
     });
+
+    Route::controller(KartuStokController::class)->group(function () {
+        Route::get('/kartu-stok', 'index')->name('kartu-stok-index');
+        Route::get('/kartu-stok/fetch-nama-barang', 'fetchNamaBarang')->name('kartu-stok-fetch-nama-barang');
+        Route::get('/kartu-stok/fetch/{idBarang}/{tanggalMulai}/{tanggalAkhir}', 'fetch')->name('kartu-stok-fetch');
+    });
+
 });
 
 require __DIR__ . '/auth.php';
