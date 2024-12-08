@@ -11,6 +11,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\BarangMasukController;
 use App\Http\Controllers\BarangKeluarController;
 use App\Http\Controllers\KartuStokController;
+use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\SaldoBarangController;
 
 /*
@@ -105,6 +106,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/kartu-stok', 'index')->name('kartu-stok-index');
         Route::get('/kartu-stok/fetch-nama-barang', 'fetchNamaBarang')->name('kartu-stok-fetch-nama-barang');
         Route::get('/kartu-stok/fetch/{idBarang}/{tanggalMulai}/{tanggalAkhir}', 'fetch')->name('kartu-stok-fetch');
+    });
+
+    Route::controller(PenggunaController::class)->group(function () {
+        Route::get('/pengguna', 'index')->name('pengguna-index');
+        Route::get('/pengguna/fetch', 'fetch')->name('pengguna-fetch');
+        Route::get('/pengguna/fetch-nama-barang', 'fetchNamaBarang')->name('pengguna-fetch-nama-barang');
+        Route::post('/pengguna/simpan', 'simpan')->name('pengguna-simpan');
+        Route::get('/pengguna/fetch-nama-barang/specific/{id}', 'fetchNamaBarangSpecific')->name('pengguna-fetch-nama-barang-specific');
+        Route::get('/pengguna/edit/{id}', 'edit')->name('pengguna-edit');
+        Route::post('/pengguna/update/{id}', 'update')->name('pengguna-update');
+        Route::get('/pengguna/hapus/{id}', 'hapus')->name('pengguna-hapus');
     });
 
 });

@@ -24,7 +24,9 @@ class ProfileController extends Controller
         $id = Auth::user()->id;
         $user = User::find($id);
 
-        return view('backend.profile.index', compact('title', 'user'));
+        $placeholderSelect2 = '';
+
+        return view('backend.profile.index', compact('title', 'user', 'placeholderSelect2'));
     }
 
     /**

@@ -23,7 +23,9 @@ class BarangMasukController extends Controller
         $kategori = Kategori::all();
         $satuan = Satuan::all();
 
-        return view('backend.barang_masuk.index', compact('semua_barang_masuk', 'title', 'sub_title', 'kategori', 'satuan'));
+        $placeholderSelect2 = 'Select an option';
+
+        return view('backend.barang_masuk.index', compact('semua_barang_masuk', 'title', 'sub_title', 'kategori', 'satuan', 'placeholderSelect2'));
     }
 
     function fetch()

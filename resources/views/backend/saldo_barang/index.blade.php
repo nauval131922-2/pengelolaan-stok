@@ -52,7 +52,7 @@
                                         {{-- tombol pdf --}}
                                         <div class="col-lg-2">
                                             <div class="mb-3">
-                                                <button class="btn btn-danger" id="btnPdf" type="button"><i
+                                                <button class="btn btn-danger w-100" id="btnPdf" type="button"><i
                                                         class="ri-file-pdf-line"></i> PDF</button>
                                             </div>
                                         </div>

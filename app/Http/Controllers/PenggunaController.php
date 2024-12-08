@@ -2,111 +2,106 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Barang;
+use App\Models\User;
 use App\Models\Satuan;
 use App\Models\Kategori;
-use App\Models\BarangMasuk;
-use App\Models\BarangKeluar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class BarangKeluarController extends Controller
+class PenggunaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $semua_barang_keluar = BarangKeluar::all();
-        $title = 'Barang Keluar';
-        $sub_title = 'Barang Keluar';
-
-        $kategori = Kategori::all();
-        $satuan = Satuan::all();
+        $semua_pengguna = User::all();
+        $title = 'Pengguna';
+        $sub_title = 'Pengguna';
 
         $placeholderSelect2 = 'Select an option';
 
-        return view('backend.barang_keluar.index', compact('semua_barang_keluar', 'title', 'sub_title', 'kategori', 'satuan', 'placeholderSelect2'));
+        return view('backend.pengguna.index', compact('semua_pengguna', 'title', 'sub_title', 'placeholderSelect2'));
     }
 
     function fetch()
     {
-        $semua_barang_keluar = BarangKeluar::with('barang')->get();
+        $semua_pengguna = Pengguna::with('pengguna')->get();
 
-        foreach ($semua_barang_keluar as $barang_keluar) {
-            $barang = $barang_keluar->barang;
-            $kategori = Kategori::find($barang->kategori_id);
-            $satuan = Satuan::find($barang->satuan_id);
-            $barang->nama_kategori = $kategori->nama_kategori;
-            $barang->nama_satuan = $satuan->nama_satuan;
+        foreach ($semua_pengguna as $pengguna) {
+            $pengguna = $pengguna->pengguna;
+            $kategori = Kategori::find($pengguna->kategori_id);
+            $satuan = Satuan::find($pengguna->satuan_id);
+            $pengguna->nama_kategori = $kategori->nama_kategori;
+            $pengguna->nama_satuan = $satuan->nama_satuan;
         }
 
-        return response()->json(['data' => $semua_barang_keluar]);
+        return response()->json(['data' => $semua_pengguna]);
     }
 
-    function fetchNamaBarang()
+    function fetchNamapengguna()
     {
-        $nama_barang = Barang::all();
+        $nama_pengguna = pengguna::all();
 
         return response()->json([
-            'data' => $nama_barang
+            'data' => $nama_pengguna
         ]);
     }
 
-    public function fetchNamaBarangSpecific($id, Request $request)
+    public function fetchNamapenggunaSpecific($id, Request $request)
     {
         // Ambil parameter 'tanggal' dari query string (URL)
         $tanggal = $request->query('tanggal');
 
         // ambil parameter 'id' dari request
-        $idBarangKeluar = $request->query('idBarangKeluar');
+        $idPengguna = $request->query('idPengguna');
 
-        // Ambil data barang berdasarkan id
-        $nama_barang = Barang::where('id', $id)->first();
+        // Ambil data pengguna berdasarkan id
+        $nama_pengguna = pengguna::where('id', $id)->first();
 
-        // Cek apakah barang ada
-        if (!$nama_barang) {
-            return response()->json(['error' => 'Barang tidak ditemukan'], 404);
+        // Cek apakah pengguna ada
+        if (!$nama_pengguna) {
+            return response()->json(['error' => 'pengguna tidak ditemukan'], 404);
         }
 
-        // Ambil data kategori dan satuan barang
-        $kategori = Kategori::find($nama_barang->kategori_id);
-        $satuan = Satuan::find($nama_barang->satuan_id);
+        // Ambil data kategori dan satuan pengguna
+        $kategori = Kategori::find($nama_pengguna->kategori_id);
+        $satuan = Satuan::find($nama_pengguna->satuan_id);
 
         // Hitung qty_masuk dan qty_keluar berdasarkan tanggal jika ada
         if ($tanggal) {
-            $qty_masuk = BarangMasuk::where('barang_id', $nama_barang->id)
+            $qty_masuk = penggunaMasuk::where('pengguna_id', $nama_pengguna->id)
                 ->whereDate('tanggal', '<=', $tanggal)
                 ->sum('qty');
 
             // jika request $id ada, maka kecualikan data dengan id yang sama
-            if ($idBarangKeluar) {
-                $qty_keluar = BarangKeluar::where('barang_id', $nama_barang->id)
-                    ->where('id', '!=', $idBarangKeluar)
+            if ($idPengguna) {
+                $qty_keluar = Pengguna::where('pengguna_id', $nama_pengguna->id)
+                    ->where('id', '!=', $idPengguna)
                     ->whereDate('tanggal', '<=', $tanggal)
                     ->sum('qty');
             } else {
-                $qty_keluar = BarangKeluar::where('barang_id', $nama_barang->id)
+                $qty_keluar = Pengguna::where('pengguna_id', $nama_pengguna->id)
                     ->whereDate('tanggal', '<=', $tanggal)
                     ->sum('qty');
             }
         } else {
             // Jika tidak ada tanggal, hitung berdasarkan semua data
-            $qty_masuk = BarangMasuk::where('barang_id', $nama_barang->id)->sum('qty');
-            $qty_keluar = BarangKeluar::where('barang_id', $nama_barang->id)->sum('qty');
+            $qty_masuk = penggunaMasuk::where('pengguna_id', $nama_pengguna->id)->sum('qty');
+            $qty_keluar = Pengguna::where('pengguna_id', $nama_pengguna->id)->sum('qty');
         }
 
-        // Hitung saldo barang
-        $saldo_barang = $qty_masuk - $qty_keluar;
+        // Hitung saldo pengguna
+        $saldo_pengguna = $qty_masuk - $qty_keluar;
 
         // Kembalikan response JSON
         return response()->json([
             'data' => [
-                'id' => $nama_barang->id,
-                'nama_barang' => $nama_barang->nama_barang,
+                'id' => $nama_pengguna->id,
+                'nama_pengguna' => $nama_pengguna->nama_pengguna,
                 'kategori' => $kategori->nama_kategori,
                 'satuan' => $satuan->nama_satuan,
-                'saldo_barang' => $saldo_barang
+                'saldo_pengguna' => $saldo_pengguna
             ],
         ]);
     }
@@ -127,7 +122,7 @@ class BarangKeluarController extends Controller
     {
         // Validate the request data
         $validator = Validator::make($request->all(), [
-            'nama_barang' => 'required',
+            'nama_pengguna' => 'required',
             'qty' => 'required',
             'tanggal' => 'required',
         ]);
@@ -141,13 +136,13 @@ class BarangKeluarController extends Controller
         }
 
         // Save the required data from the request
-        $barang_keluar = new BarangKeluar;
-        $barang_keluar->barang_id = $request->nama_barang;
-        $barang_keluar->qty = $request->qty;
-        $barang_keluar->tanggal = $request->tanggal;
+        $pengguna = new Pengguna;
+        $pengguna->pengguna_id = $request->nama_pengguna;
+        $pengguna->qty = $request->qty;
+        $pengguna->tanggal = $request->tanggal;
 
         // If the user profile is successfully updated, return success response
-        if ($barang_keluar->save()) {
+        if ($pengguna->save()) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Data berhasil disimpan!'
@@ -164,7 +159,7 @@ class BarangKeluarController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(BarangKeluar $barang_keluar)
+    public function show(Pengguna $pengguna)
     {
         //
     }
@@ -174,12 +169,12 @@ class BarangKeluarController extends Controller
      */
     public function edit($id)
     {
-        $barang_keluar = BarangKeluar::find($id);
+        $pengguna = Pengguna::find($id);
 
-        $title = 'Ubah Barang Keluar';
+        $title = 'Ubah Pengguna';
 
         return response()->json([
-            'data' => $barang_keluar,
+            'data' => $pengguna,
             'title' => $title
         ]);
     }
@@ -191,7 +186,7 @@ class BarangKeluarController extends Controller
     {
         // Validate the request data
         $validator = Validator::make($request->all(), [
-            'nama_barang' => 'required',
+            'nama_pengguna' => 'required',
             'kategori' => 'required',
             'satuan' => 'required',
             'qty' => 'required',
@@ -207,13 +202,13 @@ class BarangKeluarController extends Controller
         }
 
         // Save the required data from the request
-        $barang_keluar = BarangKeluar::find($id);
-        $barang_keluar->barang_id = $request->nama_barang;
-        $barang_keluar->qty = $request->qty;
-        $barang_keluar->tanggal = $request->tanggal;
+        $pengguna = Pengguna::find($id);
+        $pengguna->pengguna_id = $request->nama_pengguna;
+        $pengguna->qty = $request->qty;
+        $pengguna->tanggal = $request->tanggal;
 
         // If the user profile is successfully updated, return success response
-        if ($barang_keluar->save()) {
+        if ($pengguna->save()) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Data berhasil disimpan!'
@@ -232,10 +227,10 @@ class BarangKeluarController extends Controller
      */
     public function hapus($id)
     {
-        $barang_keluar = BarangKeluar::find($id);
+        $pengguna = Pengguna::find($id);
 
         // jika berhasil dihapus
-        if ($barang_keluar->delete()) {
+        if ($pengguna->delete()) {
             return response()->json(['status' => 'success', 'message' => 'Data berhasil dihapus.']);
         } else {
             return response()->json(['status' => 'error', 'message' => 'Gagal menghapus data.']);

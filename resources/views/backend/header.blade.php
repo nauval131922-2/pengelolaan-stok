@@ -185,7 +185,7 @@ box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
                             <i class="ri-settings-3-line me-2"></i> Sistem <div class="arrow-down"></div>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="topnav-apps">
-                            <a href="#" class="dropdown-item">Pengguna</a>
+                            <a href="{{ route('pengguna-index') }}" class="dropdown-item">Pengguna</a>
 
                         </div>
                     </li>

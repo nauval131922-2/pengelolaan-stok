@@ -19,7 +19,9 @@ class SatuanController extends Controller
         $title = 'Master Satuan';
         $sub_title = 'Satuan';
 
-        return view('backend.master-satuan.index', compact('semua_satuan', 'title', 'sub_title'));
+        $placeholderSelect2 = '';
+
+        return view('backend.master-satuan.index', compact('semua_satuan', 'title', 'sub_title', 'placeholderSelect2'));
     }
 
     function fetch()

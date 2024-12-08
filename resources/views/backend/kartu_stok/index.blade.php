@@ -89,6 +89,7 @@
                                         <thead>
                                             <tr>
                                                 <th>#</th>
+                                                <th>Tanggal</th>
                                                 <th>Nama Barang</th>
                                                 <th>Kategori</th>
                                                 <th>Debit</th>
@@ -151,7 +152,15 @@
             });
         }
 
-        $('#tanggal').on('change', function() {
+        $('#tanggalMulai').on('change', function() {
+            fetchData(); // Panggil fetchData saat tanggal berubah
+        });
+
+        $('#tanggalAkhir').on('change', function() {
+            fetchData(); // Panggil fetchData saat tanggal berubah
+        });
+
+        $('#nama_barang').on('change', function() {
             fetchData(); // Panggil fetchData saat tanggal berubah
         });
 
@@ -163,44 +172,44 @@
             var tanggalMulai = $('#tanggalMulai').val();
             var tanggalAkhir = $('#tanggalAkhir').val();
 
-            // Validasi input
-            if (!idBarang || !tanggalMulai || !tanggalAkhir) {
-                alert("Semua field harus diisi!");
-                return;
-            }
-
             $.ajax({
-                url: '{{ route('kartu-stok-fetch', [':idBarang', ':tanggalMulai', ':tanggalAkhir']) }}'
-                    .replace(':idBarang', idBarang)
-                    .replace(':tanggalMulai', tanggalMulai)
-                    .replace(':tanggalAkhir', tanggalAkhir), // Ganti placeholder dengan nilai input
+                url: '{{ url('kartu-stok/fetch') }}' + '/' + idBarang + '/' + tanggalMulai + '/' + tanggalAkhir,
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
                     var table = $('#datatable').DataTable();
+                    table.clear();
 
-                    // Clear existing table data
-                    if ($.fn.DataTable.isDataTable('#datatable')) {
-                        table.clear();
-                    }
+                    // Add the Saldo Awal row first
+                    table.row.add([
+                        '',
+                        '',
+                        'Saldo Awal',
+                        '',
+                        '',
+                        '',
+                        response.saldoAwal,
+                        ''
+                    ]);
 
-                    // Populate table with response data
-                    var data = response.data;
-                    $.each(data, function(key, value) {
+                    // Add the data rows
+                    $.each(response.data, function(index, item) {
                         table.row.add([
-                            (key + 1),
-                            value.nama_barang,
-                            value.tanggal,
-                            value.kategori.nama_kategori,
-                            value.saldo, // Pastikan data sesuai dengan respon controller
-                            value.satuan.nama_satuan
-                        ]).draw(false);
+                            index + 1, // Nomor urut
+                            item.tanggal, // Tanggal
+                            item.nama_barang, // Nama barang
+                            item.kategori, // Kategori
+                            item.debit, // Debit
+                            item.kredit, // Kredit
+                            item.saldo, // Saldo
+                            item.satuan // Satuan
+                        ]);
                     });
-                    table.columns.adjust().draw();
+                    table.draw();
                 },
                 error: function(xhr, status, error) {
-                    console.error("Error fetching data:", error);
-                    alert("Gagal mengambil data. Periksa input dan coba lagi.");
+                    // Handle error
+                    console.error("Error fetching data: " + error);
                 }
             });
         }

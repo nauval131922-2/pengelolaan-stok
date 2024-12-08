@@ -17,7 +17,9 @@ class KategoriController extends Controller
         $title = 'Master Kategori';
         $sub_title = 'Kategori';
 
-        return view('backend.master-kategori.index', compact('semua_kategori', 'title', 'sub_title'));
+        $placeholderSelect2 = '';
+
+        return view('backend.master-kategori.index', compact('semua_kategori', 'title', 'sub_title', 'placeholderSelect2'));
     }
 
     function fetch()
