@@ -87,7 +87,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mb-1 mt-2">
+                                    <div class="row mb-1">
                                         <div class="col-lg-6 col-md-6">
                                             <label for="nama_barang" class="col-sm-12 col-form-label">Nama Barang <span
                                                     class="text-danger">*</span></label>
@@ -110,7 +110,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mb-1 mt-2">
+                                    <div class="row mb-1">
                                         <div class="col-lg-3 col-md-3">
                                             <label for="kategori" class="col-sm-12 col-form-label">Kategori <span
                                                     class="text-danger">*</span></label>
@@ -139,7 +139,7 @@
 
 
 
-                                    <div class="row mb-1 mt-2">
+                                    <div class="row mb-1">
                                         <div class="col-lg-6 col-md-6">
                                             <label for="qty" class="col-sm-12 col-form-label">Qty <span
                                                     class="text-danger">*</span></label>

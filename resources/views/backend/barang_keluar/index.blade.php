@@ -44,7 +44,7 @@
                             <div class="tab-pane fade show active" id="daftar" role="tabpanel"
                                 aria-labelledby="daftar-tab">
                                 <div class="col-xl-12 col-md-12" style="padding-top: 15px">
-                                    
+
 
                                     <table id="datatable"
                                         class="table table-striped table-bordered dt-responsive nowrap dataTable no-footer dtr-inline collapsed"
@@ -89,7 +89,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mb-1 mt-2">
+                                    <div class="row mb-1">
                                         <div class="col-lg-6 col-md-6">
                                             <label for="nama_barang" class="col-sm-12 col-form-label">Nama Barang <span
                                                     class="text-danger">*</span></label>
@@ -112,7 +112,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mb-1 mt-2">
+                                    <div class="row mb-1">
                                         <div class="col-lg-3 col-md-3">
                                             <label for="kategori" class="col-sm-12 col-form-label">Kategori</label>
 
@@ -137,7 +137,7 @@
                                     </div>
 
 
-                                    <div class="row mb-1 mt-2">
+                                    <div class="row mb-1">
                                         <div class="col-lg-6 col-md-6">
                                             <label for="saldo" class="col-sm-12 col-form-label">Saldo</label>
                                             <input class="form-control" type="number" name="saldo" id="saldo"
@@ -148,7 +148,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mb-1 mt-2">
+                                    <div class="row mb-1">
                                         <div class="col-lg-6 col-md-6">
                                             <label for="qty" class="col-sm-12 col-form-label">Qty <span
                                                     class="text-danger">*</span></label>

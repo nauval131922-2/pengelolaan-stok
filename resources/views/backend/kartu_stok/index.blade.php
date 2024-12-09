@@ -161,6 +161,12 @@
         });
 
         $('#nama_barang').on('change', function() {
+            // jika nama barang kosong, maka jangan tampilkan apapun di datatable
+            if ($(this).val() == '') {
+                $('#datatable').DataTable().clear().draw();
+                return;
+            }
+
             fetchData(); // Panggil fetchData saat tanggal berubah
         });
 
@@ -209,7 +215,7 @@
                 },
                 error: function(xhr, status, error) {
                     // Handle error
-                    console.error("Error fetching data: " + error);
+                    console.error(error);
                 }
             });
         }

@@ -26,93 +26,9 @@ class PenggunaController extends Controller
 
     function fetch()
     {
-        $semua_pengguna = Pengguna::with('pengguna')->get();
-
-        foreach ($semua_pengguna as $pengguna) {
-            $pengguna = $pengguna->pengguna;
-            $kategori = Kategori::find($pengguna->kategori_id);
-            $satuan = Satuan::find($pengguna->satuan_id);
-            $pengguna->nama_kategori = $kategori->nama_kategori;
-            $pengguna->nama_satuan = $satuan->nama_satuan;
-        }
+        $semua_pengguna = User::where('id', '!=', auth()->user()->id)->get();
 
         return response()->json(['data' => $semua_pengguna]);
-    }
-
-    function fetchNamapengguna()
-    {
-        $nama_pengguna = pengguna::all();
-
-        return response()->json([
-            'data' => $nama_pengguna
-        ]);
-    }
-
-    public function fetchNamapenggunaSpecific($id, Request $request)
-    {
-        // Ambil parameter 'tanggal' dari query string (URL)
-        $tanggal = $request->query('tanggal');
-
-        // ambil parameter 'id' dari request
-        $idPengguna = $request->query('idPengguna');
-
-        // Ambil data pengguna berdasarkan id
-        $nama_pengguna = pengguna::where('id', $id)->first();
-
-        // Cek apakah pengguna ada
-        if (!$nama_pengguna) {
-            return response()->json(['error' => 'pengguna tidak ditemukan'], 404);
-        }
-
-        // Ambil data kategori dan satuan pengguna
-        $kategori = Kategori::find($nama_pengguna->kategori_id);
-        $satuan = Satuan::find($nama_pengguna->satuan_id);
-
-        // Hitung qty_masuk dan qty_keluar berdasarkan tanggal jika ada
-        if ($tanggal) {
-            $qty_masuk = penggunaMasuk::where('pengguna_id', $nama_pengguna->id)
-                ->whereDate('tanggal', '<=', $tanggal)
-                ->sum('qty');
-
-            // jika request $id ada, maka kecualikan data dengan id yang sama
-            if ($idPengguna) {
-                $qty_keluar = Pengguna::where('pengguna_id', $nama_pengguna->id)
-                    ->where('id', '!=', $idPengguna)
-                    ->whereDate('tanggal', '<=', $tanggal)
-                    ->sum('qty');
-            } else {
-                $qty_keluar = Pengguna::where('pengguna_id', $nama_pengguna->id)
-                    ->whereDate('tanggal', '<=', $tanggal)
-                    ->sum('qty');
-            }
-        } else {
-            // Jika tidak ada tanggal, hitung berdasarkan semua data
-            $qty_masuk = penggunaMasuk::where('pengguna_id', $nama_pengguna->id)->sum('qty');
-            $qty_keluar = Pengguna::where('pengguna_id', $nama_pengguna->id)->sum('qty');
-        }
-
-        // Hitung saldo pengguna
-        $saldo_pengguna = $qty_masuk - $qty_keluar;
-
-        // Kembalikan response JSON
-        return response()->json([
-            'data' => [
-                'id' => $nama_pengguna->id,
-                'nama_pengguna' => $nama_pengguna->nama_pengguna,
-                'kategori' => $kategori->nama_kategori,
-                'satuan' => $satuan->nama_satuan,
-                'saldo_pengguna' => $saldo_pengguna
-            ],
-        ]);
-    }
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -122,9 +38,10 @@ class PenggunaController extends Controller
     {
         // Validate the request data
         $validator = Validator::make($request->all(), [
-            'nama_pengguna' => 'required',
-            'qty' => 'required',
-            'tanggal' => 'required',
+            'name' => 'required',
+            'username' => 'required|unique:users,username',
+            'password' => 'required',
+            'confirmPassword' => 'required|same:password',
         ]);
 
         // If validation fails, return error response
@@ -136,10 +53,10 @@ class PenggunaController extends Controller
         }
 
         // Save the required data from the request
-        $pengguna = new Pengguna;
-        $pengguna->pengguna_id = $request->nama_pengguna;
-        $pengguna->qty = $request->qty;
-        $pengguna->tanggal = $request->tanggal;
+        $pengguna = new User;
+        $pengguna->name = $request->name;
+        $pengguna->username = $request->username;
+        $pengguna->password = bcrypt($request->password);
 
         // If the user profile is successfully updated, return success response
         if ($pengguna->save()) {
@@ -155,21 +72,12 @@ class PenggunaController extends Controller
             ]);
         }
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Pengguna $pengguna)
-    {
-        //
-    }
-
     /**
      * Show the form for editing the specified resource.
      */
     public function edit($id)
     {
-        $pengguna = Pengguna::find($id);
+        $pengguna = User::find($id);
 
         $title = 'Ubah Pengguna';
 
@@ -186,11 +94,8 @@ class PenggunaController extends Controller
     {
         // Validate the request data
         $validator = Validator::make($request->all(), [
-            'nama_pengguna' => 'required',
-            'kategori' => 'required',
-            'satuan' => 'required',
-            'qty' => 'required',
-            'tanggal' => 'required',
+            'name' => 'required',
+            'username' => 'required|unique:users,username,' . $id,
         ]);
 
         // If validation fails, return error response
@@ -202,10 +107,23 @@ class PenggunaController extends Controller
         }
 
         // Save the required data from the request
-        $pengguna = Pengguna::find($id);
-        $pengguna->pengguna_id = $request->nama_pengguna;
-        $pengguna->qty = $request->qty;
-        $pengguna->tanggal = $request->tanggal;
+        $pengguna = User::find($id);
+        $pengguna->name = $request->name;
+        $pengguna->username = $request->username;
+
+        // jika password diisikan, maka update password
+        if ($request->password) {
+            // jika confirm password tidak sesuai, maka return error
+            if ($request->password != $request->confirmPassword) {
+                return response()->json([
+                    'status' => 'error2',
+                    'message' => 'Password tidak sesuai!'
+                ]);
+            }
+
+            $pengguna->password = bcrypt($request->password);
+        }
+
 
         // If the user profile is successfully updated, return success response
         if ($pengguna->save()) {
@@ -227,7 +145,7 @@ class PenggunaController extends Controller
      */
     public function hapus($id)
     {
-        $pengguna = Pengguna::find($id);
+        $pengguna = User::find($id);
 
         // jika berhasil dihapus
         if ($pengguna->delete()) {

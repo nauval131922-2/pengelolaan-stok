@@ -15,7 +15,6 @@
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="javascript: void(0);">Stok</a></li>
-                            <li class="breadcrumb-item active">Mutasi</li>
                             <li class="breadcrumb-item active">Pengguna</li>
                         </ol>
                     </div>
@@ -73,86 +72,55 @@
 
                                     <div class="row mb-1 mt-2">
                                         <div class="col-lg-6 col-md-6">
-                                            <label for="tanggal" class="col-sm-12 col-form-label">Tanggal <span
+                                            <label for="name" class="col-sm-12 col-form-label">Name <span
                                                     class="text-danger">*</span></label>
-                                            <input class="form-control" type="date" name="tanggal" id="tanggal"
-                                                required>
-                                            <div class="my-2">
-                                                <span class="text-danger error-text tanggal_error"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-1 mt-2">
-                                        <div class="col-lg-6 col-md-6">
-                                            <label for="nama" class="col-sm-12 col-form-label">Nama <span
-                                                    class="text-danger">*</span></label>
-
-                                            <div class="d-flex">
-                                                <!-- Tombol Reload -->
-                                                <button type="button" id="reload-nama-barang"
-                                                    class="btn btn-sm btn-outline-light ml-2" title="Reload nama">
-                                                    <i class="fa fa-sync-alt"></i> <!-- Icon reload -->
-                                                </button>
-                                                <!-- Dropdown nama -->
-                                                <select class="select2" name="nama" id="nama" required>
-                                                    <option value=""></option>
-                                                </select>
-                                            </div>
-
-                                            <div class="my-2">
-                                                <span class="text-danger error-text nama_error"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-1 mt-2">
-                                        <div class="col-lg-3 col-md-3">
-                                            <label for="kategori" class="col-sm-12 col-form-label">Kategori</label>
-
-                                            <input class="form-control" type="text" name="kategori" id="kategori"
-                                                value="" placeholder="" readonly>
-
-                                            <div class="my-2">
-                                                <span class="text-danger error-text kategori_error"></span>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-3 col-md-3">
-                                            <label for="satuan" class="col-sm-12 col-form-label">Satuan</label>
-
-                                            <input class="form-control" type="text" name="satuan" id="satuan"
-                                                value="" placeholder="" readonly>
-
-                                            <div class="my-2">
-                                                <span class="text-danger error-text satuan_error"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="row mb-1 mt-2">
-                                        <div class="col-lg-6 col-md-6">
-                                            <label for="saldo" class="col-sm-12 col-form-label">Saldo</label>
-                                            <input class="form-control" type="number" name="saldo" id="saldo"
-                                                value="" placeholder="" readonly>
-                                            <div class="my-2">
-                                                <span class="text-danger error-text saldo_error"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-1 mt-2">
-                                        <div class="col-lg-6 col-md-6">
-                                            <label for="qty" class="col-sm-12 col-form-label">Qty <span
-                                                    class="text-danger">*</span></label>
-                                            <input class="form-control" type="number" name="qty" id="qty"
+                                            <input class="form-control" type="text" name="name" id="name"
                                                 value="" placeholder="" required>
                                             <div class="my-2">
-                                                <span class="text-danger error-text qty_error"></span>
+                                                <span class="text-danger error-text name_error"></span>
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="row mb-1">
+                                        <div class="col-lg-6 col-md-6">
+                                            <label for="username" class="col-sm-12 col-form-label">Username <span
+                                                    class="text-danger">*</span></label>
+                                            <input class="form-control" type="text" name="username" id="username"
+                                                value="" placeholder="" required>
+                                            <div class="my-2">
+                                                <span class="text-danger error-text username_error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-1">
+                                        <div class="col-lg-6 col-md-6">
+                                            <label for="password" class="col-sm-12 col-form-label">Password <span
+                                                    class="text-danger">*</span></label>
+                                            <input class="form-control" type="password" name="password" id="password"
+                                                value="" placeholder="">
+                                            <div class="my-2">
+                                                <span class="text-danger error-text password_error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-1">
+                                        <div class="col-lg-6 col-md-6">
+                                            <label for="confirmPassword" class="col-sm-12 col-form-label">Confirm Password
+                                                <span class="text-danger">*</span></label>
+                                            <input class="form-control" type="password" name="confirmPassword"
+                                                id="confirmPassword" value="" placeholder="">
+                                            <div class="my-2">
+                                                <span class="text-danger error-text confirmPassword_error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
 
                                     <div class="row mb-1">
                                         <div class="col-lg-6 col-md-6">
@@ -177,122 +145,14 @@
     <script>
         $(document).ready(function() {
 
-            // fetchData()
-
-            // fetchNamaBarang();
-        });
-
-        function cekQty() {
-            let qty = parseFloat($('#qty').val()); // Ambil nilai qty yang dimasukkan
-            let saldo = parseFloat($('#saldo').val()); // Ambil nilai saldo dari elemen yang sesuai
-
-            // Periksa apakah qty dan saldo adalah angka yang valid
-            if (isNaN(qty) || isNaN(saldo)) {
-                $('.qty_error').text('Jumlah qty atau saldo tidak valid.');
-                return;
-            }
-
-            // Periksa apakah qty lebih besar dari saldo
-            if (qty > saldo) {
-                // Tampilkan pesan error
-                $('.qty_error').text('Jumlah qty tidak boleh lebih besar dari saldo yang tersedia (' + saldo + ').');
-            } else {
-                // Hapus pesan error jika qty valid
-                $('.qty_error').text('');
-            }
-        }
-
-        // Panggil cekQty saat input qty atau saldo berubah
-        $('#qty').on('input', function() {
-            cekQty();
-        });
-
-
-
-
-
-        function fetchDataSpecific() {
-            let id = $('#nama').val(); // Ambil ID dari dropdown
-            let tanggal = $('#tanggal').val(); // Ambil tanggal dari input dengan ID 'tanggal'
-            let idBarangKeluar = $('#id').val();
-
-            // Jika id kosong, reset elemen
-            if (id === '') {
-                $('#kategori').val('');
-                $('#satuan').val('');
-                $('#saldo').val('');
-                return; // Hentikan eksekusi AJAX jika ID kosong
-            }
-
-            // Kirim request AJAX
-            $.ajax({
-                url: '{{ url('barang-keluar/fetch-nama-barang/specific') }}/' + id + '?tanggal=' +
-                    tanggal + '&idBarangKeluar=' + idBarangKeluar, // Format URL yang benar
-                method: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    // Isi elemen dengan data yang diterima
-                    $('#kategori').val(response.data.kategori);
-                    $('#satuan').val(response.data.satuan);
-                    $('#saldo').val(response.data.saldo_barang);
-
-                    cekQty();
-                },
-                error: function(xhr, status, error) {
-                    // Penanganan jika ada error
-                    console.error("Error:", error);
-                    alert('Terjadi kesalahan saat mengambil data.');
-                }
-            });
-        }
-
-        // Trigger saat #nama berubah
-        $('#nama').on('change', function() {
-            fetchDataSpecific(); // Panggil fungsi untuk mengambil data
-        });
-
-        // Trigger saat #tanggal berubah
-        $('#tanggal').on('change', function() {
-            fetchDataSpecific(); // Panggil fungsi untuk mengambil data
-        });
-
-
-        // button reload
-        $('#reload-nama-barang').on('click', function() {
-            fetchNamaBarang();
-        });
-
-        // Fokus ke kotak pencarian ketika dropdown dibuka dan panggil fetchSatuanData
-        $('#nama').on('select2:open', function() {
-
-            const searchField = document.querySelector('.select2-search__field');
-            if (searchField) {
-                searchField.focus();
-            }
+            fetchData()
 
         });
-
-        // buatkan function fetchSatuanData
-        function fetchNamaBarang() {
-            $.ajax({
-                url: '{{ route('barang-keluar-fetch-nama-barang') }}',
-                method: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    let namaBarangSelect = $('#nama');
-                    namaBarangSelect.empty().append('<option value=""></option>');
-                    // Hapus opsi lama dan tambahkan placeholder
-                    $.each(response.data, function(index, item) {
-                        namaBarangSelect.append(new Option(item.nama, item.id));
-                    });
-                }
-            });
-        }
 
         // buatkan function fecthData
         function fetchData() {
             $.ajax({
-                url: '{{ route('barang-keluar-fetch') }}',
+                url: '{{ route('pengguna-fetch') }}',
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
@@ -305,7 +165,6 @@
                     $.each(data, function(key, value) {
                         var editButton = '';
                         var deleteButton = '';
-
 
                         editButton =
                             '<button class="btn btn-light btn-sm" id="btnEditData" data-bs-toggle="modal" data-bs-target="#exampleModalScrollable" style="margin-right: 5px;" onclick="editData(' +
@@ -320,9 +179,9 @@
 
                         table.row.add([
                             (key + 1),
-                            'editButton + deleteButton',
-                            'value.tanggal',
-                            'value.barang.nama',
+                            editButton + deleteButton,
+                            value.name,
+                            value.username,
                         ]).draw(false);
                     });
                     table.columns.adjust().draw();
@@ -334,7 +193,7 @@
             if (confirm('Apakah anda yakin ingin menghapus data ini?')) {
 
                 $.ajax({
-                    url: '{{ url('barang-keluar/hapus') }}/' + id,
+                    url: '{{ url('pengguna/hapus') }}/' + id,
                     type: 'get',
                     data: {
                         _token: '{{ csrf_token() }}'
@@ -356,25 +215,10 @@
             // deklarasikan id
             let id = $('#id').val();
 
-            // Ambil nilai qty dan saldo
-            let qty = $('#qty').val();
-            let saldo = $('#saldo').val(); // Misalnya saldo disimpan dalam elemen dengan id 'saldo'
-
-            // Pastikan qty dan saldo dalam bentuk angka
-            qty = parseFloat(qty);
-            saldo = parseFloat(saldo);
-
-            // Cek apakah qty melebihi saldo
-            if (qty > saldo) {
-                // Tampilkan alert jika qty melebihi saldo
-                alert('Jumlah qty tidak boleh lebih besar dari saldo yang tersedia (' + saldo + ').');
-                return; // Hentikan eksekusi jika qty lebih besar dari saldo
-            }
-
             // Jika id kosong (untuk simpan data baru)
             if (id == '') {
                 $.ajax({
-                    url: '{{ route('barang-keluar-simpan') }}',
+                    url: '{{ route('pengguna-simpan') }}',
                     type: 'POST',
                     data: formData,
                     contentType: false,
@@ -412,7 +256,7 @@
                 });
             } else { // Jika id ada (untuk update data)
                 $.ajax({
-                    url: '{{ url('barang-keluar/update') }}/' + id,
+                    url: '{{ url('pengguna/update') }}/' + id,
                     type: 'POST',
                     data: formData,
                     contentType: false,
@@ -459,7 +303,7 @@
         // buatkan function editData
         function editData(id) {
             $.ajax({
-                url: '{{ url('barang-keluar/edit') }}/' + id, // Sesuaikan URL sesuai kebutuhan Anda
+                url: '{{ url('pengguna/edit') }}/' + id, // Sesuaikan URL sesuai kebutuhan Anda
                 type: 'GET',
                 success: function(response) {
                     // Periksa apakah data berhasil ditemukan
@@ -472,9 +316,8 @@
 
                         // Isi field dengan data yang diterima
                         $('#id').val(response.data.id);
-                        $('#tanggal').val(response.data.tanggal);
-                        $('#nama').val(response.data.barang_id).trigger('change');
-                        $('#qty').val(response.data.qty);
+                        $('#name').val(response.data.name);
+                        $('#username').val(response.data.username);
 
                         // Jika ada field lain seperti keterangan, sesuaikan juga
                         // $('#keterangan').val(response.data.keterangan);
