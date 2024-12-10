@@ -99,6 +99,8 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(SaldoBarangController::class)->group(function () {
         Route::get('/saldo-barang', 'index')->name('saldo-barang-index');
+        // memunculkan modal pdf
+        Route::get('/saldo-barang/pdf/{tanggal}', 'pdf')->name('saldo-barang-pdf');
         Route::get('/saldo-barang/fetch/{tanggal}', 'fetch')->name('saldo-barang-fetch');
     });
 
