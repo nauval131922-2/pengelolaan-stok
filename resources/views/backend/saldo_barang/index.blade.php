@@ -65,7 +65,6 @@
                                         <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>Action</th>
                                                 <th>Nama Barang</th>
                                                 <th>Kategori</th>
                                                 <th>Saldo</th>
@@ -147,16 +146,12 @@
                             value.id +
                             ')"><i class="ri-file-pdf-line align-middle me-1"></i><span style="vertical-align: middle">PDF</span></button>';
 
-                        // Pastikan saldo ditampilkan dengan format dua angka desimal
-                        let formattedSaldo = value.saldo_barang.toFixed(2).replace(
-                            /\B(?=(\d{3})+(?!\d))/g, ",");
 
                         table.row.add([
                             (key + 1),
-                            pdfButton,
                             value.nama_barang,
                             value.kategori.nama_kategori,
-                            formattedSaldo,
+                            value.saldo_barang,
                             value.satuan.nama_satuan,
                         ]).draw(false);
                     });

@@ -123,6 +123,20 @@
         }
     </style>
 
+    <div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pdfModalLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalContent">
+                    <!-- Konten PDF akan dimasukkan di sini -->
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         $(document).ready(function() {
@@ -219,5 +233,33 @@
                 }
             });
         }
+
+        $('#btnPdf').on('click', function() {
+            var idBarang = $('#nama_barang').val();
+            var tanggalMulai = $('#tanggalMulai').val();
+            var tanggalAkhir = $('#tanggalAkhir').val();
+
+            $.ajax({
+                url: '{{ url('kartu-stok/pdf') }}/' + idBarang + '/' + tanggalMulai + '/' + tanggalAkhir,
+                type: 'GET',
+                xhrFields: {
+                    responseType: 'blob' // Pastikan respons diterima sebagai blob
+                },
+                success: function(response) {
+                    const modalContent = document.getElementById('modalContent');
+                    const pdfUrl = URL.createObjectURL(response);
+                    modalContent.innerHTML = '<embed src="' + pdfUrl + '" width="100%" height="500px">';
+                    const modal = new bootstrap.Modal(document.getElementById('pdfModal'));
+                    modal.show();
+
+                    // set modal title
+                    const modalTitle = document.getElementById('pdfModalLabel');
+                    modalTitle.textContent = 'Laporan Kartu Stok Barang';
+                },
+                error: function() {
+                    alert('Gagal memuat PDF.');
+                }
+            });
+        });
     </script>
 @endsection

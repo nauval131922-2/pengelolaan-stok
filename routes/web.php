@@ -99,7 +99,6 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(SaldoBarangController::class)->group(function () {
         Route::get('/saldo-barang', 'index')->name('saldo-barang-index');
-        // memunculkan modal pdf
         Route::get('/saldo-barang/pdf/{tanggal}', 'pdf')->name('saldo-barang-pdf');
         Route::get('/saldo-barang/fetch/{tanggal}', 'fetch')->name('saldo-barang-fetch');
     });
@@ -107,6 +106,7 @@ Route::middleware('auth')->group(function () {
     Route::controller(KartuStokController::class)->group(function () {
         Route::get('/kartu-stok', 'index')->name('kartu-stok-index');
         Route::get('/kartu-stok/fetch-nama-barang', 'fetchNamaBarang')->name('kartu-stok-fetch-nama-barang');
+        Route::get('/kartu-stok/pdf/{idBarang}/{tanggalMulai}/{tanggalAkhir}', 'pdf')->name('saldo-barang-pdf');
         Route::get('/kartu-stok/fetch/{idBarang}/{tanggalMulai}/{tanggalAkhir}', 'fetch')->name('kartu-stok-fetch');
     });
 

@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title }}</title>
     <style>
         body {
@@ -92,7 +94,10 @@
 </head>
 
 <body>
-    <h1 style="text-decoration: underline">{{ $title }}</h1>
+    <h1 style="text-decoration: underline">{{ $title2 }}</h1>
+    <h3>{{ $namaBarang }}</h3>
+    <p>{{ $tanggalAwal }} - {{ $tanggalAkhir }}</p>
+
     <div class="table-container">
         <table>
             <thead>
@@ -100,18 +105,32 @@
                     <th>#</th>
                     <th>Nama Barang</th>
                     <th>Kategori</th>
-                    <th>Saldo Barang</th>
+                    <th>Debit</th>
+                    <th>Kredit</th>
+                    <th>Saldo</th>
                     <th>Satuan</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($semua_barang as $barang)
+                <tr>
+                    <td>1</td>
+                    <td>Saldo awal</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: right">{{ number_format($saldoAwal, 2, ',', '.') }}</td>
+                    <td>{{ $namaSatuan }}</td>
+                </tr>
+                @foreach ($kartuStok as $item)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $barang['nama_barang'] }}</td>
-                        <td>{{ $barang['kategori']['nama_kategori'] }}</td>
-                        <td style="text-align: right">{{ number_format($barang['saldo_barang'], 2, ',', '.') }}</td>
-                        <td>{{ $barang['satuan']['nama_satuan'] }}</td>
+                        {{-- loop nomor mulai dari 2 --}}
+                        <td>{{ $loop->iteration + 1 }}</td>
+                        <td>{{ $item['nama_barang'] }}</td>
+                        <td>{{ $item['kategori'] }}</td>
+                        <td style="text-align: right">{{ number_format($item['debit'], 2, ',', '.') }}</td>
+                        <td style="text-align: right">{{ number_format($item['kredit'], 2, ',', '.') }}</td>
+                        <td style="text-align: right">{{ number_format($item['saldo'], 2, ',', '.') }}</td>
+                        <td>{{ $item['satuan'] }}</td>
                     </tr>
                 @endforeach
             </tbody>
