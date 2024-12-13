@@ -106,65 +106,175 @@ class KartuStokController extends Controller
         }
     }
 
+    // public function fetchForDashboard()
+    // {
+    //     try {
+    //         // Get the 7 latest transactions for all products
+    //         $transactions = BarangMasuk::with('barang.kategori', 'barang.satuan')
+    //             ->latest()
+    //             ->take(5)
+    //             ->get()
+    //             ->concat(BarangKeluar::with('barang.kategori', 'barang.satuan')
+    //                 ->latest()
+    //                 ->take(5)
+    //                 ->get())
+    //             ->sortByDesc('updated_at')
+    //             ->sortByDesc('tanggal');
+
+    //         // $transactions = BarangMasuk::with(['barang.kategori', 'barang.satuan'])
+    //         //     ->latest()
+    //         //     ->union(BarangKeluar::with(['barang.kategori', 'barang.satuan'])
+    //         //         ->latest())
+    //         //     ->orderBy('tanggal', 'desc')
+    //         //     ->orderBy('updated_at', 'desc')
+    //         //     ->paginate(10);
+
+    //         $transactions = DB::table('barang_masuks')
+    //             ->select('barang_masuks.*', 'kategoris.nama_kategori as kategori', 'satuans.nama_satuan as satuan')
+    //             ->join('barangs', 'barang_masuks.barang_id', '=', 'barangs.id')
+    //             ->join('kategoris', 'barangs.kategori_id', '=', 'kategoris.id')
+    //             ->join('satuans', 'barangs.satuan_id', '=', 'satuans.id')
+    //             ->union(
+    //                 DB::table('barang_keluars')
+    //                     ->select('barang_keluars.*', 'kategoris.nama_kategori as kategori', 'satuans.nama_satuan as satuan')
+    //                     ->join('barangs', 'barang_keluars.barang_id', '=', 'barangs.id')
+    //                     ->join('kategoris', 'barangs.kategori_id', '=', 'kategoris.id')
+    //                     ->join('satuans', 'barangs.satuan_id', '=', 'satuans.id')
+    //             )
+    //             ->orderByDesc('updated_at')
+    //             ->orderByDesc('tanggal')
+    //             ->limit(10)
+    //             ->get();
+
+    //         // Calculate the cumulative balance
+    //         $saldo = 0;
+    //         $transactions = $transactions->map(function ($item) use (&$saldo) {
+    //             $barang = $item->barang; // Relasi ke tabel Barang
+    //             $kategori = $barang->kategori; // Relasi ke tabel Kategori
+    //             $satuan = $barang->satuan; // Relasi ke tabel Satuan
+
+    //             if ($item instanceof BarangMasuk) {
+    //                 $debit = $item->qty;
+    //                 $kredit = 0;
+    //             } else {
+    //                 $debit = 0;
+    //                 $kredit = $item->qty;
+    //             }
+
+    //             // Ambil qty masuk dan qty keluar berdasarkan tanggal
+    //             $qty_masuk = 0;
+    //             $qty_masuk = BarangMasuk::where('barang_id', $barang->id)
+    //                 ->whereDate('tanggal', '<=', $item->tanggal)  // Filter berdasarkan tanggal
+    //                 ->sum('qty');
+
+    //             $qty_keluar = 0;
+    //             $qty_keluar = BarangKeluar::where('barang_id', $barang->id)
+    //                 ->whereDate('tanggal', '<=', $item->tanggal)  // Filter berdasarkan tanggal
+    //                 ->sum('qty');
+
+    //             // Hitung saldo barang
+    //             $saldo = $qty_masuk - $qty_keluar;
+
+    //             return [
+    //                 'tanggal' => $item->tanggal,
+    //                 'nama_barang' => $barang->nama_barang,
+    //                 'kategori' => $kategori->nama_kategori,
+    //                 'debit' => $debit,
+    //                 'kredit' => $kredit,
+    //                 'saldo' => $saldo,
+    //                 'satuan' => $satuan->nama_satuan,
+    //             ];
+    //         });
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'data' => $transactions->values(), // Reset indeks array
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Gagal mengambil data: ' . $e->getMessage(),
+    //         ], 500);
+    //     }
+    // }
+
     public function fetchForDashboard()
     {
         try {
-            // Get the 7 latest transactions for all products
-            $transactions = BarangMasuk::with('barang.kategori', 'barang.satuan')
-                ->latest()
-                ->take(5)
-                ->get()
-                ->concat(BarangKeluar::with('barang.kategori', 'barang.satuan')
-                    ->latest()
-                    ->take(5)
-                    ->get())
-                ->sortByDesc('tanggal');
+            // Fetch the data from both tables with necessary joins
+            $transactions = DB::table('barang_masuks')
+                ->select(
+                    'barang_masuks.id',
+                    'barang_masuks.tanggal',
+                    'barang_masuks.created_at', // Include 'created_at' explicitly
+                    'barang_masuks.updated_at', // Include 'updated_at' explicitly
+                    'barang_masuks.qty as debit',
+                    DB::raw('0 as kredit'),
+                    'barangs.nama_barang',
+                    'kategoris.nama_kategori as kategori',
+                    'satuans.nama_satuan as satuan'
+                )
+                ->join('barangs', 'barang_masuks.barang_id', '=', 'barangs.id')
+                ->join('kategoris', 'barangs.kategori_id', '=', 'kategoris.id')
+                ->join('satuans', 'barangs.satuan_id', '=', 'satuans.id')
+                ->union(
+                    DB::table('barang_keluars')
+                        ->select(
+                            'barang_keluars.id',
+                            'barang_keluars.tanggal',
+                            'barang_keluars.created_at', // Include 'created_at' explicitly
+                            'barang_keluars.updated_at', // Include 'updated_at' explicitly
+                            DB::raw('0 as debit'),
+                            'barang_keluars.qty as kredit',
+                            'barangs.nama_barang',
+                            'kategoris.nama_kategori as kategori',
+                            'satuans.nama_satuan as satuan'
+                        )
+                        ->join('barangs', 'barang_keluars.barang_id', '=', 'barangs.id')
+                        ->join('kategoris', 'barangs.kategori_id', '=', 'kategoris.id')
+                        ->join('satuans', 'barangs.satuan_id', '=', 'satuans.id')
+                )
+                ->orderByDesc('tanggal')
+                ->orderByDesc('created_at') // Now safe to use
+                ->limit(10)
+                ->get();
+
 
             // Calculate the cumulative balance
             $saldo = 0;
             $transactions = $transactions->map(function ($item) use (&$saldo) {
-                $barang = $item->barang; // Relasi ke tabel Barang
-                $kategori = $barang->kategori; // Relasi ke tabel Kategori
-                $satuan = $barang->satuan; // Relasi ke tabel Satuan
+                $barangId = DB::table('barangs')->where('nama_barang', $item->nama_barang)->value('id');
 
-                if ($item instanceof BarangMasuk) {
-                    $debit = $item->qty;
-                    $kredit = 0;
-                } else {
-                    $debit = 0;
-                    $kredit = $item->qty;
-                }
-
-                // Ambil qty masuk dan qty keluar berdasarkan tanggal
-                $qty_masuk = 0;
-                $qty_masuk = BarangMasuk::where('barang_id', $barang->id)
-                    ->whereDate('tanggal', '<=', $item->tanggal)  // Filter berdasarkan tanggal
-                    ->whereTime('updated_at', '<=', $item->updated_at)
+                // Calculate incoming and outgoing quantities up to the current date
+                $qtyMasuk = DB::table('barang_masuks')
+                    ->where('barang_id', $barangId)
+                    ->whereDate('tanggal', '<=', $item->tanggal)
+                    ->whereDate('created_at', '<', $item->created_at)
                     ->sum('qty');
 
-                $qty_keluar = 0;
-                $qty_keluar = BarangKeluar::where('barang_id', $barang->id)
-                    ->whereDate('tanggal', '<=', $item->tanggal)  // Filter berdasarkan tanggal
-                    ->whereTime('updated_at', '<=', $item->updated_at)
+                $qtyKeluar = DB::table('barang_keluars')
+                    ->where('barang_id', $barangId)
+                    ->whereDate('tanggal', '<=', $item->tanggal)
+                    ->whereDate('created_at', '<', $item->created_at)
                     ->sum('qty');
 
-                // Hitung saldo barang
-                $saldo = $qty_masuk - $qty_keluar;
+                // Update balance
+                $saldo = $qtyKeluar;
 
                 return [
                     'tanggal' => $item->tanggal,
-                    'nama_barang' => $barang->nama_barang,
-                    'kategori' => $kategori->nama_kategori,
-                    'debit' => $debit,
-                    'kredit' => $kredit,
+                    'nama_barang' => $item->nama_barang,
+                    'kategori' => $item->kategori,
+                    'debit' => $item->debit,
+                    'kredit' => $item->kredit,
                     'saldo' => $saldo,
-                    'satuan' => $satuan->nama_satuan,
+                    'satuan' => $item->satuan,
                 ];
             });
 
             return response()->json([
                 'success' => true,
-                'data' => $transactions->values(), // Reset indeks array
+                'data' => $transactions->values(),
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -173,6 +283,7 @@ class KartuStokController extends Controller
             ], 500);
         }
     }
+
 
     public function pdf($idBarang, $tanggalMulai, $tanggalAkhir)
     {
