@@ -103,6 +103,7 @@
             <thead>
                 <tr>
                     <th>#</th>
+                    <th>Tanggal</th>
                     <th>Nama Barang</th>
                     <th>Kategori</th>
                     <th>Debit</th>
@@ -114,6 +115,7 @@
             <tbody>
                 <tr>
                     <td>1</td>
+                    <td></td>
                     <td>Saldo awal</td>
                     <td></td>
                     <td></td>
@@ -125,6 +127,7 @@
                     <tr>
                         {{-- loop nomor mulai dari 2 --}}
                         <td>{{ $loop->iteration + 1 }}</td>
+                        <td>{{ $item['tanggal'] }}</td>
                         <td>{{ $item['nama_barang'] }}</td>
                         <td>{{ $item['kategori'] }}</td>
                         <td style="text-align: right">{{ number_format($item['debit'], 2, ',', '.') }}</td>

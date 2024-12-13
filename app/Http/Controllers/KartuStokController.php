@@ -106,6 +106,74 @@ class KartuStokController extends Controller
         }
     }
 
+    public function fetchForDashboard()
+    {
+        try {
+            // Get the 7 latest transactions for all products
+            $transactions = BarangMasuk::with('barang.kategori', 'barang.satuan')
+                ->latest()
+                ->take(5)
+                ->get()
+                ->concat(BarangKeluar::with('barang.kategori', 'barang.satuan')
+                    ->latest()
+                    ->take(5)
+                    ->get())
+                ->sortByDesc('tanggal');
+
+            // Calculate the cumulative balance
+            $saldo = 0;
+            $transactions = $transactions->map(function ($item) use (&$saldo) {
+                $barang = $item->barang; // Relasi ke tabel Barang
+                $kategori = $barang->kategori; // Relasi ke tabel Kategori
+                $satuan = $barang->satuan; // Relasi ke tabel Satuan
+
+                if ($item instanceof BarangMasuk) {
+                    $debit = $item->qty;
+                    $kredit = 0;
+                } else {
+                    $debit = 0;
+                    $kredit = $item->qty;
+                }
+
+                // Ambil qty masuk dan qty keluar berdasarkan tanggal
+                $qty_masuk = 0;
+                $qty_masuk = BarangMasuk::where('barang_id', $barang->id)
+                    ->whereDate('tanggal', '<=', $item->tanggal)  // Filter berdasarkan tanggal
+                    ->whereTime('updated_at', '<=', $item->updated_at)
+                    ->sum('qty');
+
+                $qty_keluar = 0;
+                $qty_keluar = BarangKeluar::where('barang_id', $barang->id)
+                    ->whereDate('tanggal', '<=', $item->tanggal)  // Filter berdasarkan tanggal
+                    ->whereTime('updated_at', '<=', $item->updated_at)
+                    ->sum('qty');
+
+                // Hitung saldo barang
+                $saldo = $qty_masuk - $qty_keluar;
+
+                return [
+                    'tanggal' => $item->tanggal,
+                    'nama_barang' => $barang->nama_barang,
+                    'kategori' => $kategori->nama_kategori,
+                    'debit' => $debit,
+                    'kredit' => $kredit,
+                    'saldo' => $saldo,
+                    'satuan' => $satuan->nama_satuan,
+                ];
+            });
+
+            return response()->json([
+                'success' => true,
+                'data' => $transactions->values(), // Reset indeks array
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function pdf($idBarang, $tanggalMulai, $tanggalAkhir)
     {
         try {

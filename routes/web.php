@@ -3,16 +3,17 @@
 use App\Models\Barang;
 use App\Models\Kategori;
 use App\Models\BarangMasuk;
+use App\Models\BarangKeluar;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KategoriController;
-use App\Http\Controllers\BarangMasukController;
-use App\Http\Controllers\BarangKeluarController;
-use App\Http\Controllers\KartuStokController;
 use App\Http\Controllers\PenggunaController;
+use App\Http\Controllers\KartuStokController;
+use App\Http\Controllers\BarangMasukController;
 use App\Http\Controllers\SaldoBarangController;
+use App\Http\Controllers\BarangKeluarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +33,26 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     $placeholderSelect2 = '';
 
-    return view('dashboard', compact('placeholderSelect2'));
+    // total barang
+    $semua_barang = Barang::all();
+    $total_barang = $semua_barang->count();
+
+    // total barang kosong
+    foreach ($semua_barang as $barang) {
+        // Ambil qty masuk dan qty keluar berdasarkan tanggal
+        $qty_masuk = BarangMasuk::where('barang_id', $barang->id)
+            ->sum('qty');
+
+        $qty_keluar = BarangKeluar::where('barang_id', $barang->id)
+            ->sum('qty');
+
+        // Hitung saldo barang
+        $barang->saldo_barang = $qty_masuk - $qty_keluar;
+    }
+
+    $barang_kosong = $semua_barang->where('saldo_barang', 0)->count();
+
+    return view('dashboard', compact('placeholderSelect2', 'total_barang', 'barang_kosong'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -106,6 +126,7 @@ Route::middleware('auth')->group(function () {
     Route::controller(KartuStokController::class)->group(function () {
         Route::get('/kartu-stok', 'index')->name('kartu-stok-index');
         Route::get('/kartu-stok/fetch-nama-barang', 'fetchNamaBarang')->name('kartu-stok-fetch-nama-barang');
+        Route::get('/kartu-stok/fetch-for-dashboard', 'fetchForDashboard')->name('kartu-stok-fetch-for-dashboard');
         Route::get('/kartu-stok/pdf/{idBarang}/{tanggalMulai}/{tanggalAkhir}', 'pdf')->name('saldo-barang-pdf');
         Route::get('/kartu-stok/fetch/{idBarang}/{tanggalMulai}/{tanggalAkhir}', 'fetch')->name('kartu-stok-fetch');
     });
@@ -120,7 +141,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/pengguna/update/{id}', 'update')->name('pengguna-update');
         Route::get('/pengguna/hapus/{id}', 'hapus')->name('pengguna-hapus');
     });
-
 });
 
 require __DIR__ . '/auth.php';
