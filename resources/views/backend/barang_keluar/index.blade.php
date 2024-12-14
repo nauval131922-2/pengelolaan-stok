@@ -25,8 +25,8 @@
 
         <div class="card">
             <div class="card-body">
-                <div class="d-flex">
-                    <div class="flex-grow-1">
+                {{-- <div class="d-flex"> --}}
+                    {{-- <div class="flex-grow-1"> --}}
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="daftar-tab" data-bs-toggle="tab"
@@ -172,8 +172,8 @@
                             </div>
                         </div>
 
-                    </div>
-                </div>
+                    {{-- </div> --}}
+                {{-- </div> --}}
             </div>
         </div>
 

@@ -246,20 +246,33 @@ class KartuStokController extends Controller
                 $barangId = DB::table('barangs')->where('nama_barang', $item->nama_barang)->value('id');
 
                 // Calculate incoming and outgoing quantities up to the current date
-                $qtyMasuk = DB::table('barang_masuks')
-                    ->where('barang_id', $barangId)
-                    ->whereDate('tanggal', '<=', $item->tanggal)
-                    ->whereDate('created_at', '<', $item->created_at)
-                    ->sum('qty');
+                if ($item->debit > 0) {
+                    $qtyMasuk = DB::table('barang_masuks')
+                        ->where('barang_id', $barangId)
+                        ->where('tanggal', '<=', $item->tanggal)
+                        ->where('id', "<>", $item->id)
+                        ->sum('qty');
 
-                $qtyKeluar = DB::table('barang_keluars')
-                    ->where('barang_id', $barangId)
-                    ->whereDate('tanggal', '<=', $item->tanggal)
-                    ->whereDate('created_at', '<', $item->created_at)
-                    ->sum('qty');
+                    $qtyKeluar = DB::table('barang_keluars')
+                        ->where('barang_id', $barangId)
+                        ->where('tanggal', '<=', $item->tanggal)
+                        ->sum('qty');
 
-                // Update balance
-                $saldo = $qtyKeluar;
+                    $saldo = ($qtyMasuk - $qtyKeluar) + $item->debit;
+                } else {
+                    $qtyMasuk = DB::table('barang_masuks')
+                        ->where('barang_id', $barangId)
+                        ->where('tanggal', '<=', $item->tanggal)
+                        ->sum('qty');
+
+                    $qtyKeluar = DB::table('barang_keluars')
+                        ->where('barang_id', $barangId)
+                        ->where('tanggal', '<=', $item->tanggal)
+                        ->where('id', "<>", $item->id)
+                        ->sum('qty');
+
+                    $saldo =  ($qtyMasuk - $qtyKeluar) - $item->kredit;
+                }
 
                 return [
                     'tanggal' => $item->tanggal,
