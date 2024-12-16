@@ -1,78 +1,45 @@
-<!--
-=========================================================
-Login Form Bootstrap 1
-=========================================================
+<x-guest-layout>
+    <!-- Session Status -->
+    <x-auth-session-status class="mb-4" :status="session('status')" />
 
-Product Page: https://uifresh.net
-Copyright 2021 UIFresh (https://uifresh.net)
-Coded by UIFresh
+    <form method="POST" action="{{ route('login') }}">
+        @csrf
 
-=========================================================
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
-<!doctype html>
-<html lang="en">
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/png" href="{{ asset('login_asset/assets/img/favicon.png') }}">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ asset('login_asset/assets/css/bootstrap.min.css') }}">
-    <!-- FontAwesome CSS -->
-    <link rel="stylesheet" href="{{ asset('login_asset/assets/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('login_asset/assets/css/uf-style.css') }}">
-    <title>Login Form Bootstrap 1 by UIFresh</title>
-</head>
+        {{-- username --}}
+        <div>
+            <x-input-label for="username" :value="__('Username')" />
 
-<body>
-    <div class="uf-form-signin">
-        <div class="text-center">
-            <a href="https://uifresh.net/"><img src="{{ asset('login_asset/assets/img/logo-fb.png') }}" alt="" width="100"
-                    height="100"></a>
-            <h1 class="text-white h3">Account Login</h1>
+            <x-text-input id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')" required autofocus autocomplete="username" />
+
+            <x-input-error :messages="$errors->get('username')" class="mt-2" />
         </div>
-        <form class="mt-4" method="POST" action="{{ route('login2') }}">
-            <div class="input-group uf-input-group input-group-lg mb-3">
-                <span class="input-group-text fa fa-user"></span>
-                <input type="text" class="form-control" name="username" placeholder="Username or Email address">
-            </div>
-            <div class="input-group uf-input-group input-group-lg mb-3">
-                <span class="input-group-text fa fa-lock"></span>
-                <input type="password" class="form-control" placeholder="Password" name="password">
-            </div>
-            <div class="d-flex mb-3 justify-content-between">
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input uf-form-check-input" id="exampleCheck1">
-                    <label class="form-check-label text-white" for="exampleCheck1">Remember Me</label>
-                </div>
-                <a href="#">Forgot password?</a>
-            </div>
-            <div class="d-grid mb-4">
-                <button type="submit" class="btn uf-btn-primary btn-lg">Login</button>
-            </div>
-            <div class="d-flex mb-3">
-                <div class="dropdown-divider m-auto w-25"></div>
-                <small class="text-nowrap text-white">Or login with</small>
-                <div class="dropdown-divider m-auto w-25"></div>
-            </div>
-            <div class="uf-social-login d-flex justify-content-center">
-                <a href="#" class="uf-social-ic" title="Login with Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="uf-social-ic" title="Login with Twitter"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="uf-social-ic" title="Login with Google"><i class="fab fa-google"></i></a>
-            </div>
-            <div class="mt-4 text-center">
-                <span class="text-white">Don't have an account?</span>
-                <a href="register.html">Sign Up</a>
-            </div>
-        </form>
-    </div>
 
-    <!-- JavaScript -->
+        <!-- Password -->
+        <div class="mt-4">
+            <x-input-label for="password" :value="__('Password')" />
 
-    <!-- Separate Popper and Bootstrap JS -->
-    <script src="{{ asset('login_asset/assets/js/popper.min.js') }}"></script>
-    <script src="{{ asset('login_asset/assets/js/bootstrap.min.js') }}"></script>
-</body>
+            <x-text-input id="password" class="block mt-1 w-full"
+                            type="password"
+                            name="password"
+                            required autocomplete="current-password" />
 
-</html>
+            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        </div>
+
+        <!-- Remember Me -->
+        <div class="block mt-4">
+            <label for="remember_me" class="inline-flex items-center">
+                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500 me-2" name="remember">
+                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+            </label>
+        </div>
+
+        <div class="flex items-center justify-end mt-4">
+
+            <x-primary-button class="ms-3">
+                {{ __('Log in') }}
+            </x-primary-button>
+        </div>
+    </form>
+</x-guest-layout>

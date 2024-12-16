@@ -86,7 +86,11 @@ class BarangController extends Controller
         $barang = new Barang;
         $barang->nama_barang = $request->barang;
         $barang->kategori_id = $request->kategori;
+        // nama kategori diambil dari tabel kategori dengan id $request->kategori_id
+        $barang->nama_kategori = Kategori::find($request->kategori)->nama_kategori;
         $barang->satuan_id = $request->satuan;
+        // nama satuan diambil dari tabel satuan dengan id $request->satuan_id
+        $barang->nama_satuan = Satuan::find($request->satuan)->nama_satuan;
 
         // If the user profile is successfully updated, return success response
         if ($barang->save()) {
@@ -150,7 +154,11 @@ class BarangController extends Controller
         $barang = Barang::find($id);
         $barang->nama_barang = $request->barang;
         $barang->kategori_id = $request->kategori;
+        // nama kategori diambil dari tabel kategori dengan id $request->kategori_id
+        $barang->nama_kategori = Kategori::find($request->kategori)->nama_kategori;
         $barang->satuan_id = $request->satuan;
+        // nama satuan diambil dari tabel satuan dengan id $request->satuan_id
+        $barang->nama_satuan = Satuan::find($request->satuan)->nama_satuan;
 
         // If the user profile is successfully updated, return success response
         if ($barang->save()) {

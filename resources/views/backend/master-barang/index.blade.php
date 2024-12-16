@@ -265,8 +265,8 @@
                             (key + 1),
                             editButton + deleteButton,
                             value.nama_barang,
-                            value.kategori.nama_kategori,
-                            value.satuan.nama_satuan,
+                            value.nama_kategori,
+                            value.nama_satuan,
                         ]).draw(false);
                     });
                     table.columns.adjust().draw();
